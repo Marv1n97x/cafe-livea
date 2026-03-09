@@ -26,7 +26,7 @@ color:var(--text);
 }
 
 .app{
-max-width:900px;
+max-width:950px;
 margin:auto;
 background:rgba(255,255,255,0.96);
 border-radius:30px;
@@ -41,6 +41,8 @@ font-size:30px;
 font-weight:800;
 text-align:center;
 color:#de4f9c;
+cursor:pointer;
+user-select:none;
 }
 
 .subtitle{
@@ -48,28 +50,6 @@ text-align:center;
 font-size:14px;
 margin-bottom:20px;
 opacity:.85;
-}
-
-.tabs{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-margin-bottom:20px;
-}
-
-.tab-btn{
-border:none;
-padding:12px;
-border-radius:14px;
-font-weight:700;
-cursor:pointer;
-background:#fff4fa;
-color:#c75093;
-}
-
-.tab-btn.active{
-background:linear-gradient(135deg,var(--pink),#ff9ccb);
-color:white;
 }
 
 .card{
@@ -88,6 +68,7 @@ border-radius:12px;
 border:1px solid #ffd3e7;
 margin-bottom:10px;
 background:#fffafd;
+font-size:15px;
 }
 
 button{
@@ -100,6 +81,7 @@ cursor:pointer;
 background:linear-gradient(135deg,var(--pink),#ff94c8);
 color:white;
 margin-bottom:8px;
+font-size:15px;
 }
 
 button.secondary{
@@ -131,17 +113,105 @@ justify-content:center;
 font-size:22px;
 border:2px dashed #f4b7d3;
 background:#fffafd;
+transition:transform .2s ease, box-shadow .2s ease;
 }
 
 .stamp.active{
 background:linear-gradient(135deg,#ffc6e1,#c4f7e6);
 }
 
-/* Overlay animations */
+.stamp.pulse{
+animation:stampPulse .65s ease;
+box-shadow:0 0 0 10px rgba(255,114,182,.08);
+}
+
+.info-chip{
+display:inline-block;
+padding:8px 12px;
+border-radius:999px;
+background:linear-gradient(135deg,#fff4fa,#eefdf7);
+font-size:12px;
+font-weight:700;
+margin-top:10px;
+}
+
+.row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
+}
+
+.muted{
+font-size:13px;
+opacity:.8;
+line-height:1.5;
+}
+
+.qr-box{
+margin-top:14px;
+padding:14px;
+border-radius:18px;
+background:linear-gradient(135deg,#fff7fb,#f4fffb);
+border:1px solid #ffe1ee;
+text-align:center;
+}
+
+.qr-code{
+width:210px;
+max-width:100%;
+margin:12px auto;
+display:block;
+border-radius:16px;
+background:white;
+padding:10px;
+box-shadow:0 10px 20px rgba(0,0,0,.05);
+}
+
+.stats-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-top:14px;
+}
+
+.stat-card{
+background:linear-gradient(135deg,#fff6fb,#f2fff9);
+border:1px solid #ffe1ee;
+border-radius:16px;
+padding:14px;
+text-align:center;
+}
+
+.stat-number{
+font-size:24px;
+font-weight:800;
+color:#d7549a;
+}
+
+.stat-label{
+font-size:12px;
+opacity:.78;
+margin-top:4px;
+}
+
+.admin-list{
+margin-top:14px;
+display:grid;
+gap:10px;
+}
+
+.admin-item{
+padding:12px;
+border-radius:14px;
+background:#fff8fc;
+border:1px solid #f8dceb;
+font-size:14px;
+}
+
 .fx-overlay{
 position:fixed;
 inset:0;
-background:radial-gradient(circle at center, rgba(255,255,255,.85), rgba(255,255,255,.65));
+background:radial-gradient(circle at center, rgba(255,255,255,.88), rgba(255,255,255,.66));
 display:flex;
 align-items:center;
 justify-content:center;
@@ -199,20 +269,12 @@ opacity:.95;
 100%{transform:translateY(120vh) rotate(760deg) translateX(60px);opacity:0}
 }
 
-@keyframes fadeIn{
-from{opacity:0}
-to{opacity:1}
-}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes floatText{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+@keyframes stampPulse{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
 
-@keyframes floatText{
-from{transform:translateY(0)}
-to{transform:translateY(-8px)}
-}
-
-@media (max-width:700px){
-.tabs{grid-template-columns:1fr}
-.fx-title{font-size:24px}
-.floating-icon{font-size:28px}
+@media (max-width:780px){
+.row,.stats-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -228,13 +290,23 @@ to{transform:translateY(-8px)}
       <input id="emailInput" placeholder="Email">
       <button onclick="registerAccount()">Registrieren</button>
       <button class="ghost" onclick="loginCustomer()">Anmelden</button>
+      <div class="muted">Adminbereich ist versteckt und öffnet sich nur per 3x Klick auf das Logo + PIN.</div>
     </div>
 
     <div class="card hidden" id="customerAccountCard">
       <h3 id="welcomeText"></h3>
       <div id="emailText"></div>
+      <div class="info-chip">Nur der Host kann Stempel vergeben</div>
       <div class="stamps" id="customerStamps"></div>
       <div id="customerRewardText"></div>
+
+      <div class="qr-box">
+        <strong>Dein Kunden-QR-Code</strong>
+        <div class="muted">Der Admin kann deinen Account schnell erkennen und auswählen.</div>
+        <img id="qrImage" class="qr-code" alt="Kunden QR Code" />
+        <div class="muted" id="qrText"></div>
+      </div>
+
       <button class="ghost" onclick="logoutCustomer()">Abmelden</button>
     </div>
   </div>
@@ -250,6 +322,23 @@ to{transform:translateY(-8px)}
       <button onclick="adminAddStamp()">Stempel hinzufügen</button>
       <button class="secondary" onclick="adminRedeemReward()">Gratis Getränk</button>
       <button class="ghost" onclick="logoutAdmin()">Logout</button>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="statCustomers">0</div>
+          <div class="stat-label">Kunden</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statStamps">0</div>
+          <div class="stat-label">Aktive Stempel gesamt</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statRewards">0</div>
+          <div class="stat-label">Volle Karten</div>
+        </div>
+      </div>
+
+      <div class="admin-list" id="adminCustomerList"></div>
     </div>
   </div>
 </div>
@@ -265,28 +354,28 @@ let logoTapTimer=null;
 function getAccounts(){return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}
 function saveAccounts(a){localStorage.setItem(STORAGE_KEY,JSON.stringify(a));}
 
+function vibrate(pattern=[40,20,40]){
+  if(navigator.vibrate) navigator.vibrate(pattern);
+}
+
 const loginThemes=[
   {title:'Willkommen bei Café Livéa 💖',sub:'Schön, dass du da bist.',icons:['☕','💖','🌸','✨']},
   {title:'Matcha Mood aktiviert 🍵',sub:'Deine Stempelkarte wartet schon.',icons:['🍵','💚','✨','🌿']},
   {title:'Sweet Tiramisu Vibes 🍰',sub:'Einloggen und Lieblingsmomente sammeln.',icons:['🍰','🤎','☕','💫']},
   {title:'Coffee Love Moment ☕',sub:'Heute wird gestempelt.',icons:['☕','🩷','💕','✨']}
 ];
-
 const fullStampThemes=[
   {title:'Stempelkarte voll 🎉',sub:'10 von 10 erreicht. Dein Gratis-Getränk wartet.',icons:['☕','🎉','💖','✨']},
   {title:'Belohnung freigeschaltet 🍵',sub:'Du hast genug gesammelt.',icons:['🍵','🌟','💚','🎊']},
   {title:'Tiramisu Celebration 🍰',sub:'Zeit für deinen süßen Bonus.',icons:['🍰','🎉','🤎','✨']}
 ];
-
 const rewardThemes=[
   {title:'Gratis Getränk eingelöst ☕',sub:'Viel Freude bei deinem Genussmoment.',icons:['☕','🎁','💖','🎉']},
   {title:'Matcha Geschenk für dich 🍵',sub:'Deine Karte wurde erfolgreich eingelöst.',icons:['🍵','🎊','💚','✨']},
   {title:'Sweet Reward Moment 🍰',sub:'Café Livéa sagt danke.',icons:['🍰','🎁','💫','💖']}
 ];
 
-function randomItem(arr){
-  return arr[Math.floor(Math.random()*arr.length)];
-}
+function randomItem(arr){return arr[Math.floor(Math.random()*arr.length)];}
 
 function showCelebration(type='login'){
   const themePool = type==='full' ? fullStampThemes : type==='reward' ? rewardThemes : loginThemes;
@@ -323,6 +412,10 @@ function showCelebration(type='login'){
     overlay.appendChild(piece);
   }
 
+  if(type==='login') vibrate([50,30,50]);
+  if(type==='full') vibrate([80,40,80,40,80]);
+  if(type==='reward') vibrate([120,50,120,50,200]);
+
   setTimeout(()=>overlay.remove(), type==='reward' ? 2600 : 2200);
 }
 
@@ -333,16 +426,35 @@ function switchTab(tab){
 
 function setupHiddenAdminAccess(){
   const logo=document.getElementById('logoTrigger');
-  logo.addEventListener('click',()=>{
+  if(!logo) return;
+
+  const triggerAdmin=()=>{
+    logoTapCount=0;
+    document.getElementById('adminTab').classList.remove('hidden');
+    switchTab('admin');
+    vibrate([60,30,60]);
+  };
+
+  const registerTap=()=>{
     logoTapCount++;
     clearTimeout(logoTapTimer);
-    logoTapTimer=setTimeout(()=>{logoTapCount=0;},1600);
-    if(logoTapCount>=5){
-      logoTapCount=0;
-      document.getElementById('adminTab').classList.remove('hidden');
-      switchTab('admin');
-    }
-  });
+    logoTapTimer=setTimeout(()=>{logoTapCount=0;},1800);
+    if(logoTapCount>=3) triggerAdmin();
+  };
+
+  logo.addEventListener('click', registerTap);
+  logo.addEventListener('touchstart', registerTap, { passive:true });
+}
+
+function generateQrValue(user){
+  return `Cafe Livea | ${user.name} | ${user.email} | stamps:${user.stamps}`;
+}
+
+function updateCustomerQr(user){
+  const qrValue = generateQrValue(user);
+  const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=' + encodeURIComponent(qrValue);
+  document.getElementById('qrImage').src = qrUrl;
+  document.getElementById('qrText').textContent = user.email;
 }
 
 function registerAccount(){
@@ -354,10 +466,8 @@ function registerAccount(){
   saveAccounts(accounts);
   localStorage.setItem(CURRENT_CUSTOMER_KEY,email);
   showCelebration('login');
-  setupHiddenAdminAccess();
-switchTab('customer');
-renderCustomer();
-renderAdmin();
+  renderCustomer();
+  renderAdmin();
 }
 
 function loginCustomer(){
@@ -371,6 +481,8 @@ function loginCustomer(){
 
 function logoutCustomer(){
   localStorage.removeItem(CURRENT_CUSTOMER_KEY);
+  switchTab('customer');
+  document.getElementById('adminTab').classList.add('hidden');
   renderCustomer();
 }
 
@@ -383,7 +495,18 @@ function loginAdmin(){
 
 function logoutAdmin(){
   localStorage.removeItem(ADMIN_LOGGED_KEY);
+  document.getElementById('adminTab').classList.add('hidden');
+  switchTab('customer');
   renderAdmin();
+}
+
+function animateLatestStamp(count){
+  const stamps=document.querySelectorAll('#customerStamps .stamp');
+  const target=stamps[count-1];
+  if(target){
+    target.classList.add('pulse');
+    setTimeout(()=>target.classList.remove('pulse'),700);
+  }
 }
 
 function adminAddStamp(){
@@ -396,9 +519,10 @@ function adminAddStamp(){
     saveAccounts(accounts);
     renderCustomer();
     renderAdmin();
-    if(accounts[email].stamps===10){
-      showCelebration('full');
-    }
+    vibrate([35,20,35]);
+    const currentCustomer=localStorage.getItem(CURRENT_CUSTOMER_KEY);
+    if(currentCustomer===email) animateLatestStamp(accounts[email].stamps);
+    if(accounts[email].stamps===10) showCelebration('full');
   }
 }
 
@@ -442,6 +566,7 @@ function renderCustomer(){
   document.getElementById('emailText').innerText=user.email;
   document.getElementById('customerRewardText').innerText=user.stamps>=10?'🎉 Gratis Getränk verfügbar':'Stempel: '+user.stamps+'/10';
   renderStamps('customerStamps',user.stamps);
+  updateCustomerQr(user);
 }
 
 function renderAdmin(){
@@ -450,27 +575,46 @@ function renderAdmin(){
   document.getElementById('adminLoginCard').classList.toggle('hidden',logged);
   document.getElementById('adminPanelCard').classList.toggle('hidden',!logged);
   if(!logged)return;
+
   const select=document.getElementById('customerSelect');
+  const list=document.getElementById('adminCustomerList');
   select.innerHTML='';
+  list.innerHTML='';
+
   const users=Object.values(accounts);
   if(users.length===0){
     const opt=document.createElement('option');
     opt.textContent='Keine Kunden vorhanden';
     opt.value='';
     select.appendChild(opt);
-    return;
+  } else {
+    users.forEach(u=>{
+      const opt=document.createElement('option');
+      opt.value=u.email;
+      opt.textContent=u.name+' ('+u.stamps+'/10)';
+      select.appendChild(opt);
+
+      const item=document.createElement('div');
+      item.className='admin-item';
+      item.innerHTML=`<strong>${u.name}</strong><br>${u.email}<br><span class="muted">Stempel: ${u.stamps}/10</span>`;
+      list.appendChild(item);
+    });
   }
-  users.forEach(u=>{
-    const opt=document.createElement('option');
-    opt.value=u.email;
-    opt.textContent=u.name+' ('+u.stamps+'/10)';
-    select.appendChild(opt);
-  });
+
+  const totalCustomers=users.length;
+  const totalStamps=users.reduce((sum,u)=>sum+u.stamps,0);
+  const fullCards=users.filter(u=>u.stamps>=10).length;
+  document.getElementById('statCustomers').textContent=totalCustomers;
+  document.getElementById('statStamps').textContent=totalStamps;
+  document.getElementById('statRewards').textContent=fullCards;
 }
 
+setupHiddenAdminAccess();
+switchTab('customer');
 renderCustomer();
 renderAdmin();
 </script>
 </body>
 </html>
+
 
