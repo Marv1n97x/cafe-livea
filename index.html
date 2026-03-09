@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#ff72b6" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Café Livéa" />
 <title>Café Livéa – Kunden & Admin</title>
 
 <style>
@@ -283,6 +287,10 @@ opacity:.95;
 <div class="app">
   <div class="logo" id="logoTrigger">☕ Café Livéa</div>
   <div class="subtitle">Digitale Stempelkarte – 10 Getränke = 1 gratis</div>
+  <div id="installWrap" class="hidden" style="text-align:center;margin-bottom:18px;">
+    <button id="installBtn" style="max-width:260px;display:inline-block;">📲 App installieren</button>
+    <div class="muted">Auf unterstützten Geräten kannst du Café Livéa wie eine echte App hinzufügen.</div>
+  </div>
 
   <div id="customerTab">
     <div class="card" id="authCard">
@@ -358,11 +366,56 @@ const STORAGE_KEY='livea_accounts';
 const CURRENT_CUSTOMER_KEY='livea_current_user';
 const ADMIN_LOGGED_KEY='livea_admin';
 const ADMIN_PIN='9824';
+let deferredInstallPrompt=null;
 let logoTapCount=0;
 let logoTapTimer=null;
 let scannerStream=null;
 let scannerRunning=false;
 let scannerFrame=null;
+
+function setupManifest(){
+  const manifest={
+    name:'Café Livéa',
+    short_name:'Livéa',
+    start_url:'./',
+    display:'standalone',
+    background_color:'#fffdfd',
+    theme_color:'#ff72b6',
+    icons:[
+      {
+        src:'data:image/svg+xml;base64,'+btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><rect width="512" height="512" rx="120" fill="#ffd8ea"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="220">☕</text></svg>`),
+        sizes:'512x512',
+        type:'image/svg+xml',
+        purpose:'any'
+      }
+    ]
+  };
+  const blob=new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('link');
+  link.rel='manifest';
+  link.href=url;
+  document.head.appendChild(link);
+}
+
+function setupInstallPrompt(){
+  const installWrap=document.getElementById('installWrap');
+  const installBtn=document.getElementById('installBtn');
+
+  window.addEventListener('beforeinstallprompt',(e)=>{
+    e.preventDefault();
+    deferredInstallPrompt=e;
+    installWrap.classList.remove('hidden');
+  });
+
+  installBtn.addEventListener('click',async()=>{
+    if(!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt=null;
+    installWrap.classList.add('hidden');
+  });
+}
 
 function getAccounts(){return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}
 function saveAccounts(a){localStorage.setItem(STORAGE_KEY,JSON.stringify(a));}
