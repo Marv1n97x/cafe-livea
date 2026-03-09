@@ -1,378 +1,409 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Café Livéa Pro</title>
-<style>
-:root{
---pink:#ff6fb5;
---rose:#ffd6ea;
---mint:#a8f5dc;
---mint-strong:#6fe7c8;
---text:#5c3a4a;
---white:#fffafc;
---card:#fff7fb;
---shadow:0 20px 40px rgba(255,111,181,0.18);
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Café Livéa – Stempelkarte</title>
+  <style>
+    :root {
+      --pink: #ff72b6;
+      --pink-soft: #ffd8ea;
+      --rose: #fff1f7;
+      --mint: #b8f5e1;
+      --mint-strong: #7de8c8;
+      --text: #6a4760;
+      --white: #fffdfd;
+      --shadow: 0 20px 45px rgba(255, 114, 182, 0.18);
+    }
 
-*{box-sizing:border-box;}
+    * { box-sizing: border-box; }
 
-body{
-margin:0;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-background:linear-gradient(135deg,var(--rose),var(--mint));
-min-height:100vh;
-color:var(--text);
-}
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, var(--pink-soft), var(--mint));
+      padding: 24px;
+    }
 
-.app{
-width:1100px;
-max-width:95%;
-margin:28px auto;
-background:rgba(255,250,252,0.95);
-backdrop-filter:blur(8px);
-border-radius:28px;
-box-shadow:var(--shadow);
-padding:28px;
-border:1px solid rgba(255,255,255,0.8);
-}
+    .app {
+      max-width: 520px;
+      margin: 0 auto;
+      background: rgba(255, 253, 253, 0.95);
+      border: 1px solid rgba(255,255,255,0.9);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
 
-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:16px;
-margin-bottom:24px;
-flex-wrap:wrap;
-}
+    .hero {
+      padding: 28px 24px 18px;
+      background: linear-gradient(135deg, rgba(255,114,182,0.15), rgba(125,232,200,0.28));
+      text-align: center;
+    }
 
-.logo{
-font-size:28px;
-font-weight:800;
-color:#d94b96;
-}
+    .logo {
+      font-size: 30px;
+      font-weight: 800;
+      color: #de4f9c;
+      margin-bottom: 6px;
+    }
 
-.sub{
-font-size:14px;
-opacity:0.8;
-margin-top:4px;
-}
+    .subtitle {
+      font-size: 14px;
+      opacity: 0.9;
+      line-height: 1.5;
+    }
 
-.badge{
-background:linear-gradient(135deg,var(--pink),var(--mint-strong));
-color:white;
-padding:8px 14px;
-border-radius:999px;
-font-size:12px;
-font-weight:700;
-box-shadow:0 10px 20px rgba(255,111,181,0.2);
-}
+    .content {
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+    }
 
-.grid{
-display:grid;
-grid-template-columns:2fr 1fr;
-gap:24px;
-}
+    .card {
+      background: var(--white);
+      border: 1px solid #ffe3f0;
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 10px 25px rgba(255, 216, 234, 0.35);
+    }
 
-.section-title{
-font-size:20px;
-font-weight:800;
-margin:0 0 14px;
-}
+    .title {
+      font-size: 20px;
+      font-weight: 800;
+      margin: 0 0 8px;
+    }
 
-.menu-wrap,
-.cart,
-.stamp-card{
-background:var(--card);
-border:1px solid rgba(255,111,181,0.12);
-border-radius:22px;
-padding:18px;
-box-shadow:0 10px 25px rgba(168,245,220,0.18);
-}
+    .muted {
+      font-size: 14px;
+      line-height: 1.5;
+      opacity: 0.85;
+    }
 
-.menu{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
-gap:16px;
-}
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
 
-.card{
-background:white;
-border:1px solid #ffe3f0;
-border-radius:18px;
-padding:16px;
-transition:0.2s ease;
-box-shadow:0 8px 20px rgba(255,214,234,0.35);
-}
+    input {
+      width: 100%;
+      border: 1.5px solid #ffd3e7;
+      background: #fffafd;
+      border-radius: 14px;
+      padding: 14px 14px;
+      font-size: 15px;
+      outline: none;
+      color: var(--text);
+      transition: 0.2s ease;
+    }
 
-.card:hover{
-transform:translateY(-4px);
-border-color:var(--mint-strong);
-}
+    input:focus {
+      border-color: var(--mint-strong);
+      box-shadow: 0 0 0 4px rgba(125, 232, 200, 0.16);
+    }
 
-.emoji{
-font-size:30px;
-margin-bottom:8px;
-}
+    .row {
+      display: grid;
+      gap: 12px;
+    }
 
-.card h3{
-margin:0 0 6px;
-font-size:18px;
-}
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 13px 16px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(135deg, var(--pink), #ff94c8);
+      box-shadow: 0 12px 20px rgba(255,114,182,0.2);
+    }
 
-.desc{
-font-size:13px;
-opacity:0.85;
-min-height:34px;
-}
+    button.secondary {
+      background: linear-gradient(135deg, var(--mint-strong), #9af0d7);
+      color: #4d5560;
+    }
 
-.price{
-font-weight:800;
-margin:10px 0 12px;
-color:#c93f8b;
-}
+    button.ghost {
+      background: #fff7fb;
+      color: #d25598;
+      border: 1px solid #ffd3e7;
+      box-shadow: none;
+    }
 
-button{
-background:linear-gradient(135deg,var(--pink),#ff93c7);
-color:white;
-border:none;
-padding:10px 14px;
-border-radius:12px;
-font-weight:700;
-cursor:pointer;
-width:100%;
-box-shadow:0 10px 18px rgba(255,111,181,0.2);
-}
+    .hidden { display: none; }
 
-button:hover{
-transform:translateY(-1px);
-}
+    .welcome {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
 
-.sidebar{
-display:flex;
-flex-direction:column;
-gap:18px;
-}
+    .pill {
+      background: linear-gradient(135deg, var(--pink-soft), var(--mint));
+      color: #8a4f6f;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 8px 12px;
+      border-radius: 999px;
+    }
 
-.cart-item{
-display:flex;
-justify-content:space-between;
-gap:10px;
-padding:10px 0;
-border-bottom:1px solid #f8ddea;
-font-size:14px;
-}
+    .stamps {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin: 18px 0 14px;
+    }
 
-.total{
-border-top:2px solid #f3d7e6;
-padding-top:14px;
-margin-top:12px;
-font-weight:800;
-font-size:18px;
-}
+    .stamp {
+      height: 58px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      background: #fffafd;
+      border: 2px dashed #f4b7d3;
+    }
 
-.checkout{
-margin-top:14px;
-background:linear-gradient(135deg,var(--mint-strong),var(--pink));
-color:white;
-}
+    .stamp.active {
+      background: linear-gradient(135deg, #ffc6e1, #c4f7e6);
+      border-color: #ff7dba;
+    }
 
-.muted{
-font-size:13px;
-opacity:0.8;
-}
+    .reward {
+      background: linear-gradient(135deg, #fff7fb, #f5fffb);
+      border: 1px solid #f7dcea;
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
 
-.stamps{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:10px;
-margin:14px 0;
-}
+    .actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
 
-.stamp{
-height:52px;
-border-radius:16px;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:24px;
-background:white;
-border:2px dashed #f4b6d2;
-}
-
-.stamp.active{
-background:linear-gradient(135deg,#ffc7e1,var(--mint));
-border-color:#ff7ab9;
-}
-
-.reward{
-background:white;
-padding:12px;
-border-radius:14px;
-font-size:14px;
-border:1px solid #f8ddea;
-}
-
-.small-btn{
-margin-top:10px;
-}
-
-footer{
-margin-top:20px;
-text-align:center;
-font-size:12px;
-color:#9c7084;
-}
-
-@media (max-width:900px){
-.grid{grid-template-columns:1fr;}
-}
-</style>
+    .mini {
+      font-size: 12px;
+      text-align: center;
+      opacity: 0.75;
+      line-height: 1.5;
+    }
+  </style>
 </head>
 <body>
-<div class="app">
-<header>
-<div>
-<div class="logo">☕ Café Livéa</div>
-<div class="sub">Modern Coffee Experience in Pink, Rosa & Mint</div>
-</div>
-<div class="badge">Local Browser App</div>
-</header>
+  <div class="app">
+    <div class="hero">
+      <div class="logo">☕ Café Livéa</div>
+      <div class="subtitle">Deine digitale Stempelkarte in Pink, Rosa & Mint. 10 Getränke sammeln, 1 Getränk gratis bekommen.</div>
+    </div>
 
-<div class="grid">
-<div class="menu-wrap">
-<h2 class="section-title">Unsere Favoriten</h2>
-<div class="menu" id="menu"></div>
-</div>
+    <div class="content">
+      <div class="card" id="authCard">
+        <h2 class="title">💖 Registrieren</h2>
+        <p class="muted">Registriere dich mit deiner E-Mail und erhalte direkt deinen eigenen Stempelkarten-Account auf diesem Gerät.</p>
 
-<div class="sidebar">
-<div class="cart">
-<h2 class="section-title">🧾 Bestellung</h2>
-<div id="cartItems"><div class="muted">Noch nichts im Warenkorb.</div></div>
-<div class="total" id="total">Gesamt: 0.00 €</div>
-<button class="checkout" onclick="checkout()">Bestellung abschließen</button>
-</div>
+        <div class="row">
+          <div>
+            <label for="nameInput">Name</label>
+            <input id="nameInput" type="text" placeholder="Dein Name" />
+          </div>
 
-<div class="stamp-card">
-<h2 class="section-title">💖 Stempelkarte</h2>
-<div class="muted">Für jeden Kaffee gibt es einen Stempel. Bei 5 Stempeln bekommst du 1 Getränk gratis.</div>
-<div class="stamps" id="stamps"></div>
-<div class="reward" id="rewardText">Aktuell 0 von 5 Stempeln gesammelt.</div>
-<button class="small-btn" onclick="addStamp()">Stempel hinzufügen</button>
-<button class="small-btn" onclick="resetStamps()">Stempel zurücksetzen</button>
-</div>
-</div>
-</div>
+          <div>
+            <label for="emailInput">E-Mail</label>
+            <input id="emailInput" type="email" placeholder="deinname@email.de" />
+          </div>
+        </div>
 
-<footer>
-Café Livéa • Soft Pink Edition • Mit integrierter Stempelkarte
-</footer>
-</div>
+        <div class="actions">
+          <button onclick="registerAccount()">Account erstellen</button>
+          <button class="ghost" onclick="loadExistingAccount()">Mit gespeicherter E-Mail anmelden</button>
+        </div>
 
-<script>
-const products=[
-{name:"Latte",price:3.8,emoji:"☕",desc:"Cremiger Espresso mit samtiger Milch."},
-{name:"Cappuccino",price:3.6,emoji:"🥛",desc:"Espresso mit luftigem Milchschaum."},
-{name:"Flat White",price:4.0,emoji:"🤍",desc:"Kräftig, weich und super smooth."},
-{name:"Matcha Latte",price:4.5,emoji:"🍵",desc:"Bio Matcha mit feiner Hafermilch."},
-{name:"Croissant",price:2.9,emoji:"🥐",desc:"Frisch gebacken und butterzart."},
-{name:"Cheesecake",price:4.2,emoji:"🍰",desc:"Cremig, süß und perfekt zum Kaffee."}
-];
+        <p class="mini">Hinweis: Diese lokale Version speichert Accounts nur im Browser auf diesem Gerät. Für echte Online-Accounts mit mehreren Geräten bräuchtest du später noch ein Backend.</p>
+      </div>
 
-let cart=[];
-let stamps=Number(localStorage.getItem("livea_stamps")||0);
+      <div class="card hidden" id="accountCard">
+        <div class="welcome">
+          <div>
+            <h2 class="title" id="welcomeText">Willkommen</h2>
+            <div class="muted" id="emailText"></div>
+          </div>
+          <div class="pill">10 Getränke = 1 frei</div>
+        </div>
 
-const menu=document.getElementById("menu");
+        <p class="muted">Für jedes gekaufte Getränk gibt es einen Stempel. Sobald 10 Stempel voll sind, ist das nächste Getränk gratis.</p>
 
-products.forEach(p=>{
-const card=document.createElement("div");
-card.className="card";
-card.innerHTML=`
-<div class="emoji">${p.emoji}</div>
-<h3>${p.name}</h3>
-<div class="desc">${p.desc}</div>
-<div class="price">${p.price.toFixed(2)} €</div>
-<button onclick="addItem('${p.name.replace(/'/g,"\\'")}', ${p.price})">Hinzufügen</button>
-`;
-menu.appendChild(card);
-});
+        <div class="stamps" id="stamps"></div>
 
-function addItem(name,price){
-cart.push({name,price});
-renderCart();
-}
+        <div class="reward" id="rewardText">Aktuell 0 von 10 Stempeln gesammelt.</div>
 
-function renderCart(){
-const container=document.getElementById("cartItems");
-if(cart.length===0){
-container.innerHTML='<div class="muted">Noch nichts im Warenkorb.</div>';
-}else{
-container.innerHTML="";
-let total=0;
-cart.forEach(item=>{
-const row=document.createElement("div");
-row.className="cart-item";
-row.innerHTML=`<span>${item.name}</span><span>${item.price.toFixed(2)} €</span>`;
-container.appendChild(row);
-total+=item.price;
-});
-document.getElementById("total").innerText="Gesamt: "+total.toFixed(2)+" €";
-return;
-}
-document.getElementById("total").innerText="Gesamt: 0.00 €";
-}
+        <div class="actions">
+          <button onclick="addStamp()">+ 1 Getränk stempeln</button>
+          <button class="secondary" onclick="redeemReward()">Gratis Getränk einlösen</button>
+          <button class="ghost" onclick="logoutAccount()">Abmelden</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-function renderStamps(){
-const box=document.getElementById("stamps");
-box.innerHTML="";
-for(let i=1;i<=5;i++){
-const el=document.createElement("div");
-el.className="stamp"+(i<=stamps?" active":"");
-el.textContent=i<=stamps?"☕":"☆";
-box.appendChild(el);
-}
-const text=document.getElementById("rewardText");
-if(stamps>=5){
-text.innerHTML="🎉 Deine Stempelkarte ist voll! Du bekommst jetzt 1 Getränk gratis.";
-}else{
-text.innerHTML=`Aktuell ${stamps} von 5 Stempeln gesammelt.`;
-}
-localStorage.setItem("livea_stamps",stamps);
-}
+  <script>
+    const STORAGE_KEY = 'livea_accounts';
+    const CURRENT_KEY = 'livea_current_user';
 
-function addStamp(){
-if(stamps<5){
-stamps++;
-renderStamps();
-}else{
-alert("Deine Stempelkarte ist schon voll 💖");
-}
-}
+    function getAccounts() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    }
 
-function resetStamps(){
-stamps=0;
-renderStamps();
-}
+    function saveAccounts(accounts) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(accounts));
+    }
 
-function checkout(){
-if(cart.length===0){
-alert("Noch nichts bestellt ☕");
-return;
-}
-const coffeeItems=cart.filter(item=>["Latte","Cappuccino","Flat White","Matcha Latte"].includes(item.name)).length;
-if(coffeeItems>0){
-stamps=Math.min(5, stamps + coffeeItems);
-renderStamps();
-}
-alert("Danke für deine Bestellung bei Café Livéa ☕");
-cart=[];
-renderCart();
-}
+    function getCurrentEmail() {
+      return localStorage.getItem(CURRENT_KEY) || '';
+    }
 
-renderCart();
-renderStamps();
-</script>
+    function setCurrentEmail(email) {
+      localStorage.setItem(CURRENT_KEY, email);
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function registerAccount() {
+      const name = document.getElementById('nameInput').value.trim();
+      const email = document.getElementById('emailInput').value.trim().toLowerCase();
+
+      if (!name) {
+        alert('Bitte gib deinen Namen ein 💖');
+        return;
+      }
+
+      if (!isValidEmail(email)) {
+        alert('Bitte gib eine gültige E-Mail ein ✉️');
+        return;
+      }
+
+      const accounts = getAccounts();
+
+      if (!accounts[email]) {
+        accounts[email] = { name, email, stamps: 0 };
+      } else {
+        accounts[email].name = name;
+      }
+
+      saveAccounts(accounts);
+      setCurrentEmail(email);
+      renderApp();
+    }
+
+    function loadExistingAccount() {
+      const email = document.getElementById('emailInput').value.trim().toLowerCase();
+
+      if (!isValidEmail(email)) {
+        alert('Bitte gib deine gespeicherte E-Mail ein ✉️');
+        return;
+      }
+
+      const accounts = getAccounts();
+
+      if (!accounts[email]) {
+        alert('Für diese E-Mail wurde auf diesem Gerät noch kein Account gefunden.');
+        return;
+      }
+
+      setCurrentEmail(email);
+      renderApp();
+    }
+
+    function addStamp() {
+      const email = getCurrentEmail();
+      const accounts = getAccounts();
+      if (!accounts[email]) return;
+
+      if (accounts[email].stamps < 10) {
+        accounts[email].stamps += 1;
+        saveAccounts(accounts);
+        renderApp();
+      } else {
+        alert('Deine Stempelkarte ist voll 🎉 Zeit für dein Gratis-Getränk.');
+      }
+    }
+
+    function redeemReward() {
+      const email = getCurrentEmail();
+      const accounts = getAccounts();
+      if (!accounts[email]) return;
+
+      if (accounts[email].stamps >= 10) {
+        accounts[email].stamps = 0;
+        saveAccounts(accounts);
+        renderApp();
+        alert('Gratis Getränk eingelöst ☕💖');
+      } else {
+        alert('Du brauchst erst 10 volle Stempel.');
+      }
+    }
+
+    function logoutAccount() {
+      localStorage.removeItem(CURRENT_KEY);
+      renderApp();
+    }
+
+    function renderStamps(count) {
+      const box = document.getElementById('stamps');
+      box.innerHTML = '';
+
+      for (let i = 1; i <= 10; i++) {
+        const el = document.createElement('div');
+        el.className = 'stamp' + (i <= count ? ' active' : '');
+        el.textContent = i <= count ? '☕' : '☆';
+        box.appendChild(el);
+      }
+    }
+
+    function renderApp() {
+      const email = getCurrentEmail();
+      const accounts = getAccounts();
+      const user = accounts[email];
+
+      const authCard = document.getElementById('authCard');
+      const accountCard = document.getElementById('accountCard');
+
+      if (!user) {
+        authCard.classList.remove('hidden');
+        accountCard.classList.add('hidden');
+        return;
+      }
+
+      authCard.classList.add('hidden');
+      accountCard.classList.remove('hidden');
+
+      document.getElementById('welcomeText').textContent = 'Hallo, ' + user.name + ' 💕';
+      document.getElementById('emailText').textContent = user.email;
+      document.getElementById('rewardText').textContent = user.stamps >= 10
+        ? '🎉 Deine Karte ist voll. Du hast jetzt 1 Getränk gratis.'
+        : 'Aktuell ' + user.stamps + ' von 10 Stempeln gesammelt.';
+
+      renderStamps(user.stamps);
+    }
+
+    renderApp();
+  </script>
 </body>
 </html>
+
 
