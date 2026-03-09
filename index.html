@@ -6,244 +6,373 @@
 <title>Café Livéa Pro</title>
 <style>
 :root{
---pink:#ff4fa3;
---mint:#66f2c6;
---dark:#1e1e1e;
---light:#ffffff;
+--pink:#ff6fb5;
+--rose:#ffd6ea;
+--mint:#a8f5dc;
+--mint-strong:#6fe7c8;
+--text:#5c3a4a;
+--white:#fffafc;
+--card:#fff7fb;
+--shadow:0 20px 40px rgba(255,111,181,0.18);
 }
+
+*{box-sizing:border-box;}
 
 body{
 margin:0;
 font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-background:linear-gradient(135deg,var(--mint),var(--pink));
+background:linear-gradient(135deg,var(--rose),var(--mint));
 min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
+color:var(--text);
 }
 
 .app{
-width:1000px;
+width:1100px;
 max-width:95%;
-background:var(--light);
-border-radius:24px;
-box-shadow:0 30px 60px rgba(0,0,0,0.15);
-padding:30px 35px;
+margin:28px auto;
+background:rgba(255,250,252,0.95);
+backdrop-filter:blur(8px);
+border-radius:28px;
+box-shadow:var(--shadow);
+padding:28px;
+border:1px solid rgba(255,255,255,0.8);
 }
 
 header{
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin-bottom:25px;
+gap:16px;
+margin-bottom:24px;
+flex-wrap:wrap;
 }
 
 .logo{
-font-size:26px;
-font-weight:700;
+font-size:28px;
+font-weight:800;
+color:#d94b96;
+}
+
+.sub{
+font-size:14px;
+opacity:0.8;
+margin-top:4px;
 }
 
 .badge{
-background:var(--pink);
+background:linear-gradient(135deg,var(--pink),var(--mint-strong));
 color:white;
-padding:6px 12px;
+padding:8px 14px;
 border-radius:999px;
 font-size:12px;
+font-weight:700;
+box-shadow:0 10px 20px rgba(255,111,181,0.2);
 }
 
 .grid{
 display:grid;
 grid-template-columns:2fr 1fr;
-gap:25px;
+gap:24px;
+}
+
+.section-title{
+font-size:20px;
+font-weight:800;
+margin:0 0 14px;
+}
+
+.menu-wrap,
+.cart,
+.stamp-card{
+background:var(--card);
+border:1px solid rgba(255,111,181,0.12);
+border-radius:22px;
+padding:18px;
+box-shadow:0 10px 25px rgba(168,245,220,0.18);
 }
 
 .menu{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
+grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+gap:16px;
 }
 
 .card{
-border:2px solid #f3f3f3;
-border-radius:16px;
-padding:18px;
-transition:0.2s;
+background:white;
+border:1px solid #ffe3f0;
+border-radius:18px;
+padding:16px;
+transition:0.2s ease;
+box-shadow:0 8px 20px rgba(255,214,234,0.35);
 }
 
 .card:hover{
 transform:translateY(-4px);
-border-color:var(--mint);
+border-color:var(--mint-strong);
+}
+
+.emoji{
+font-size:30px;
+margin-bottom:8px;
 }
 
 .card h3{
-margin:0 0 5px 0;
+margin:0 0 6px;
+font-size:18px;
+}
+
+.desc{
+font-size:13px;
+opacity:0.85;
+min-height:34px;
 }
 
 .price{
-font-weight:700;
-margin:8px 0;
+font-weight:800;
+margin:10px 0 12px;
+color:#c93f8b;
 }
 
 button{
-background:var(--pink);
+background:linear-gradient(135deg,var(--pink),#ff93c7);
 color:white;
 border:none;
-padding:8px 12px;
-border-radius:10px;
-font-weight:600;
+padding:10px 14px;
+border-radius:12px;
+font-weight:700;
 cursor:pointer;
+width:100%;
+box-shadow:0 10px 18px rgba(255,111,181,0.2);
 }
 
 button:hover{
-opacity:0.9;
+transform:translateY(-1px);
 }
 
-.cart{
-border:2px solid #f3f3f3;
-border-radius:16px;
-padding:18px;
-}
-
-.cart h2{
-margin-top:0;
+.sidebar{
+display:flex;
+flex-direction:column;
+gap:18px;
 }
 
 .cart-item{
 display:flex;
 justify-content:space-between;
-margin-bottom:8px;
+gap:10px;
+padding:10px 0;
+border-bottom:1px solid #f8ddea;
 font-size:14px;
 }
 
 .total{
-border-top:2px solid #eee;
-padding-top:10px;
-margin-top:10px;
-font-weight:700;
+border-top:2px solid #f3d7e6;
+padding-top:14px;
+margin-top:12px;
+font-weight:800;
+font-size:18px;
 }
 
 .checkout{
-margin-top:12px;
-width:100%;
-background:var(--mint);
-color:#000;
-font-weight:700;
+margin-top:14px;
+background:linear-gradient(135deg,var(--mint-strong),var(--pink));
+color:white;
+}
+
+.muted{
+font-size:13px;
+opacity:0.8;
+}
+
+.stamps{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:10px;
+margin:14px 0;
+}
+
+.stamp{
+height:52px;
+border-radius:16px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:24px;
+background:white;
+border:2px dashed #f4b6d2;
+}
+
+.stamp.active{
+background:linear-gradient(135deg,#ffc7e1,var(--mint));
+border-color:#ff7ab9;
+}
+
+.reward{
+background:white;
+padding:12px;
+border-radius:14px;
+font-size:14px;
+border:1px solid #f8ddea;
+}
+
+.small-btn{
+margin-top:10px;
 }
 
 footer{
 margin-top:20px;
 text-align:center;
 font-size:12px;
-color:#777;
+color:#9c7084;
 }
 
+@media (max-width:900px){
+.grid{grid-template-columns:1fr;}
+}
 </style>
 </head>
-
 <body>
-
 <div class="app">
-
 <header>
+<div>
 <div class="logo">☕ Café Livéa</div>
-<div class="badge">Local App</div>
+<div class="sub">Modern Coffee Experience in Pink, Rosa & Mint</div>
+</div>
+<div class="badge">Local Browser App</div>
 </header>
 
 <div class="grid">
-
+<div class="menu-wrap">
+<h2 class="section-title">Unsere Favoriten</h2>
 <div class="menu" id="menu"></div>
+</div>
 
+<div class="sidebar">
 <div class="cart">
-<h2>🧾 Bestellung</h2>
-<div id="cartItems"></div>
-<div class="total" id="total">Gesamt: 0 €</div>
+<h2 class="section-title">🧾 Bestellung</h2>
+<div id="cartItems"><div class="muted">Noch nichts im Warenkorb.</div></div>
+<div class="total" id="total">Gesamt: 0.00 €</div>
 <button class="checkout" onclick="checkout()">Bestellung abschließen</button>
 </div>
 
+<div class="stamp-card">
+<h2 class="section-title">💖 Stempelkarte</h2>
+<div class="muted">Für jeden Kaffee gibt es einen Stempel. Bei 5 Stempeln bekommst du 1 Getränk gratis.</div>
+<div class="stamps" id="stamps"></div>
+<div class="reward" id="rewardText">Aktuell 0 von 5 Stempeln gesammelt.</div>
+<button class="small-btn" onclick="addStamp()">Stempel hinzufügen</button>
+<button class="small-btn" onclick="resetStamps()">Stempel zurücksetzen</button>
+</div>
+</div>
 </div>
 
 <footer>
-Café Livéa • Modern Coffee Experience
+Café Livéa • Soft Pink Edition • Mit integrierter Stempelkarte
 </footer>
-
 </div>
 
 <script>
-
 const products=[
-{name:"Latte",price:3.8},
-{name:"Cappuccino",price:3.6},
-{name:"Flat White",price:4.0},
-{name:"Matcha Latte",price:4.5},
-{name:"Croissant",price:2.9},
-{name:"Cheesecake",price:4.2}
-]
+{name:"Latte",price:3.8,emoji:"☕",desc:"Cremiger Espresso mit samtiger Milch."},
+{name:"Cappuccino",price:3.6,emoji:"🥛",desc:"Espresso mit luftigem Milchschaum."},
+{name:"Flat White",price:4.0,emoji:"🤍",desc:"Kräftig, weich und super smooth."},
+{name:"Matcha Latte",price:4.5,emoji:"🍵",desc:"Bio Matcha mit feiner Hafermilch."},
+{name:"Croissant",price:2.9,emoji:"🥐",desc:"Frisch gebacken und butterzart."},
+{name:"Cheesecake",price:4.2,emoji:"🍰",desc:"Cremig, süß und perfekt zum Kaffee."}
+];
 
-let cart=[]
+let cart=[];
+let stamps=Number(localStorage.getItem("livea_stamps")||0);
 
-const menu=document.getElementById("menu")
+const menu=document.getElementById("menu");
 
 products.forEach(p=>{
-
-const card=document.createElement("div")
-card.className="card"
-
+const card=document.createElement("div");
+card.className="card";
 card.innerHTML=`
+<div class="emoji">${p.emoji}</div>
 <h3>${p.name}</h3>
+<div class="desc">${p.desc}</div>
 <div class="price">${p.price.toFixed(2)} €</div>
-<button onclick="addItem('${p.name}',${p.price})">Hinzufügen</button>
-`
-
-menu.appendChild(card)
-
-})
+<button onclick="addItem('${p.name.replace(/'/g,"\\'")}', ${p.price})">Hinzufügen</button>
+`;
+menu.appendChild(card);
+});
 
 function addItem(name,price){
-cart.push({name,price})
-renderCart()
+cart.push({name,price});
+renderCart();
 }
 
 function renderCart(){
-
-const container=document.getElementById("cartItems")
-container.innerHTML=""
-
-let total=0
-
+const container=document.getElementById("cartItems");
+if(cart.length===0){
+container.innerHTML='<div class="muted">Noch nichts im Warenkorb.</div>';
+}else{
+container.innerHTML="";
+let total=0;
 cart.forEach(item=>{
+const row=document.createElement("div");
+row.className="cart-item";
+row.innerHTML=`<span>${item.name}</span><span>${item.price.toFixed(2)} €</span>`;
+container.appendChild(row);
+total+=item.price;
+});
+document.getElementById("total").innerText="Gesamt: "+total.toFixed(2)+" €";
+return;
+}
+document.getElementById("total").innerText="Gesamt: 0.00 €";
+}
 
-const row=document.createElement("div")
-row.className="cart-item"
+function renderStamps(){
+const box=document.getElementById("stamps");
+box.innerHTML="";
+for(let i=1;i<=5;i++){
+const el=document.createElement("div");
+el.className="stamp"+(i<=stamps?" active":"");
+el.textContent=i<=stamps?"☕":"☆";
+box.appendChild(el);
+}
+const text=document.getElementById("rewardText");
+if(stamps>=5){
+text.innerHTML="🎉 Deine Stempelkarte ist voll! Du bekommst jetzt 1 Getränk gratis.";
+}else{
+text.innerHTML=`Aktuell ${stamps} von 5 Stempeln gesammelt.`;
+}
+localStorage.setItem("livea_stamps",stamps);
+}
 
-row.innerHTML=`
-<span>${item.name}</span>
-<span>${item.price.toFixed(2)} €</span>
-`
+function addStamp(){
+if(stamps<5){
+stamps++;
+renderStamps();
+}else{
+alert("Deine Stempelkarte ist schon voll 💖");
+}
+}
 
-container.appendChild(row)
-
-total+=item.price
-
-})
-
-document.getElementById("total").innerText="Gesamt: "+total.toFixed(2)+" €"
-
+function resetStamps(){
+stamps=0;
+renderStamps();
 }
 
 function checkout(){
-
 if(cart.length===0){
-alert("Noch nichts bestellt ☕")
-return
+alert("Noch nichts bestellt ☕");
+return;
+}
+const coffeeItems=cart.filter(item=>["Latte","Cappuccino","Flat White","Matcha Latte"].includes(item.name)).length;
+if(coffeeItems>0){
+stamps=Math.min(5, stamps + coffeeItems);
+renderStamps();
+}
+alert("Danke für deine Bestellung bei Café Livéa ☕");
+cart=[];
+renderCart();
 }
 
-alert("Danke für deine Bestellung bei Café Livéa ☕")
-cart=[]
-renderCart()
-
-}
-
+renderCart();
+renderStamps();
 </script>
-
 </body>
 </html>
+
