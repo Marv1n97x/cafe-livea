@@ -1,577 +1,435 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Café Livéa – Kunden & Admin</title>
-  <style>
-    :root {
-      --pink: #ff72b6;
-      --pink-soft: #ffd8ea;
-      --rose: #fff1f7;
-      --mint: #b8f5e1;
-      --mint-strong: #7de8c8;
-      --text: #6a4760;
-      --white: #fffdfd;
-      --shadow: 0 20px 45px rgba(255, 114, 182, 0.18);
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Café Livéa – Kunden & Admin</title>
 
-    * { box-sizing: border-box; }
+<style>
+:root{
+--pink:#ff72b6;
+--pink-soft:#ffd8ea;
+--mint:#b8f5e1;
+--mint-strong:#7de8c8;
+--text:#6a4760;
+--white:#fffdfd;
+}
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      color: var(--text);
-      background: linear-gradient(135deg, var(--pink-soft), var(--mint));
-      padding: 20px;
-    }
+body{
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+background:linear-gradient(135deg,var(--pink-soft),var(--mint));
+padding:20px;
+}
 
-    .app {
-      max-width: 980px;
-      margin: 0 auto;
-      background: rgba(255, 253, 253, 0.96);
-      border: 1px solid rgba(255,255,255,0.9);
-      border-radius: 30px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      backdrop-filter: blur(8px);
-    }
+.app{
+max-width:900px;
+margin:auto;
+background:white;
+border-radius:30px;
+padding:20px;
+box-shadow:0 20px 40px rgba(0,0,0,0.1);
+}
 
-    .hero {
-      padding: 28px 24px 18px;
-      background: linear-gradient(135deg, rgba(255,114,182,0.15), rgba(125,232,200,0.28));
-      text-align: center;
-    }
+.logo{
+font-size:30px;
+font-weight:800;
+text-align:center;
+color:#de4f9c;
+}
 
-    .logo {
-      font-size: 30px;
-      font-weight: 800;
-      color: #de4f9c;
-      margin-bottom: 6px;
-    }
+.subtitle{
+text-align:center;
+font-size:14px;
+margin-bottom:20px;
+}
 
-    .subtitle {
-      font-size: 14px;
-      opacity: 0.9;
-      line-height: 1.5;
-    }
+.tabs{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-bottom:20px;
+}
 
-    .tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      padding: 18px 22px 0;
-    }
+.tab-btn{
+border:none;
+padding:12px;
+border-radius:14px;
+font-weight:700;
+cursor:pointer;
+background:#fff4fa;
+}
 
-    .tab-btn {
-      border: none;
-      border-radius: 16px;
-      padding: 13px;
-      font-weight: 800;
-      font-size: 15px;
-      cursor: pointer;
-      background: #fff6fb;
-      color: #c75093;
-      border: 1px solid #ffd7e8;
-    }
+.tab-btn.active{
+background:linear-gradient(135deg,var(--pink),#ff9ccb);
+color:white;
+}
 
-    .tab-btn.active {
-      background: linear-gradient(135deg, var(--pink), #ff9ccb);
-      color: white;
-      box-shadow: 0 10px 20px rgba(255,114,182,0.2);
-    }
+.card{
+background:white;
+border:1px solid #ffe3f0;
+border-radius:20px;
+padding:20px;
+margin-bottom:15px;
+}
 
-    .content {
-      padding: 22px;
-      display: grid;
-      gap: 18px;
-    }
+input,select{
+width:100%;
+padding:12px;
+border-radius:12px;
+border:1px solid #ffd3e7;
+margin-bottom:10px;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:12px;
+font-weight:700;
+cursor:pointer;
+background:linear-gradient(135deg,var(--pink),#ff94c8);
+color:white;
+margin-bottom:8px;
+}
 
-    .card {
-      background: var(--white);
-      border: 1px solid #ffe3f0;
-      border-radius: 22px;
-      padding: 18px;
-      box-shadow: 0 10px 25px rgba(255, 216, 234, 0.35);
-    }
+button.secondary{
+background:linear-gradient(135deg,var(--mint-strong),#9af0d7);
+color:#333;
+}
 
-    .title {
-      font-size: 20px;
-      font-weight: 800;
-      margin: 0 0 8px;
-    }
+button.ghost{
+background:#fff7fb;
+color:#c75093;
+border:1px solid #ffd3e7;
+}
 
-    .muted {
-      font-size: 14px;
-      line-height: 1.5;
-      opacity: 0.85;
-    }
+.hidden{display:none}
 
-    label {
-      display: block;
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
+.stamps{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:10px;
+margin-top:15px;
+}
 
-    input, select {
-      width: 100%;
-      border: 1.5px solid #ffd3e7;
-      background: #fffafd;
-      border-radius: 14px;
-      padding: 14px 14px;
-      font-size: 15px;
-      outline: none;
-      color: var(--text);
-      transition: 0.2s ease;
-      margin-bottom: 12px;
-    }
+.stamp{
+height:60px;
+border-radius:16px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:22px;
+border:2px dashed #f4b7d3;
+}
 
-    input:focus, select:focus {
-      border-color: var(--mint-strong);
-      box-shadow: 0 0 0 4px rgba(125, 232, 200, 0.16);
-    }
+.stamp.active{
+background:linear-gradient(135deg,#ffc6e1,#c4f7e6);
+}
 
-    button {
-      width: 100%;
-      border: none;
-      border-radius: 14px;
-      padding: 13px 16px;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-      color: white;
-      background: linear-gradient(135deg, var(--pink), #ff94c8);
-      box-shadow: 0 12px 20px rgba(255,114,182,0.2);
-      margin-bottom: 10px;
-    }
+/* LOGIN ANIMATION */
+.animation-overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(255,255,255,0.9);
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+font-size:40px;
+color:#ff72b6;
+animation:fadeIn 0.4s;
+z-index:999;
+}
 
-    button.secondary {
-      background: linear-gradient(135deg, var(--mint-strong), #9af0d7);
-      color: #4d5560;
-    }
+.hearts{
+font-size:50px;
+animation:pop 1s infinite alternate;
+}
 
-    button.ghost {
-      background: #fff7fb;
-      color: #d25598;
-      border: 1px solid #ffd3e7;
-      box-shadow: none;
-    }
+@keyframes pop{
+from{transform:scale(1)}
+to{transform:scale(1.3)}
+}
 
-    .hidden { display: none; }
+@keyframes fadeIn{
+from{opacity:0}
+to{opacity:1}
+}
 
-    .stamps {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      margin: 18px 0 14px;
-    }
-
-    .stamp {
-      height: 58px;
-      border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      background: #fffafd;
-      border: 2px dashed #f4b7d3;
-    }
-
-    .stamp.active {
-      background: linear-gradient(135deg, #ffc6e1, #c4f7e6);
-      border-color: #ff7dba;
-    }
-
-    .reward {
-      background: linear-gradient(135deg, #fff7fb, #f5fffb);
-      border: 1px solid #f7dcea;
-      border-radius: 16px;
-      padding: 14px;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .user-box {
-      padding: 12px;
-      border-radius: 16px;
-      background: #fff8fc;
-      border: 1px solid #f8dceb;
-      margin-bottom: 12px;
-    }
-
-    .pill {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--pink-soft), var(--mint));
-      color: #8a4f6f;
-      font-size: 12px;
-      font-weight: 800;
-      padding: 8px 12px;
-      border-radius: 999px;
-      margin-top: 8px;
-    }
-
-    .list {
-      display: grid;
-      gap: 10px;
-      max-height: 350px;
-      overflow: auto;
-      margin-top: 14px;
-    }
-
-    .list-item {
-      background: #fff8fc;
-      border: 1px solid #f8dceb;
-      border-radius: 16px;
-      padding: 12px;
-    }
-
-    .list-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 6px;
-      flex-wrap: wrap;
-    }
-
-    .tiny {
-      font-size: 12px;
-      opacity: 0.75;
-    }
-
-    .mini {
-      font-size: 12px;
-      text-align: center;
-      opacity: 0.75;
-      line-height: 1.5;
-      margin-top: 6px;
-    }
-
-    @media (max-width: 860px) {
-      .grid, .tabs { grid-template-columns: 1fr; }
-    }
-  </style>
+</style>
 </head>
+
 <body>
-  <div class="app">
-    <div class="hero">
-      <div class="logo">☕ Café Livéa</div>
-      <div class="subtitle">Digitale Stempelkarte mit Kundenbereich und Adminbereich. 10 Getränke sammeln, 1 Getränk gratis erhalten.</div>
-    </div>
 
-    <div class="tabs">
-      <button id="customerTabBtn" class="tab-btn active" onclick="switchTab('customer')">💖 Kundenbereich</button>
-      <button id="adminTabBtn" class="tab-btn" onclick="switchTab('admin')">🔐 Adminbereich</button>
-    </div>
+<div class="app">
 
-    <div class="content">
-      <div id="customerTab">
-        <div class="grid">
-          <div class="card" id="authCard">
-            <h2 class="title">Registrieren / Anmelden</h2>
-            <p class="muted">Kunden können sich mit Name und E-Mail registrieren und danach nur ihren eigenen Stand ansehen.</p>
-            <label for="nameInput">Name</label>
-            <input id="nameInput" type="text" placeholder="Dein Name" />
-            <label for="emailInput">E-Mail</label>
-            <input id="emailInput" type="email" placeholder="deinname@email.de" />
-            <button onclick="registerAccount()">Account erstellen</button>
-            <button class="ghost" onclick="loginCustomer()">Anmelden</button>
-            <div class="mini">Diese Demo speichert alles lokal im Browser. Für echte Online-Accounts auf mehreren Geräten braucht es später ein Backend.</div>
-          </div>
+<div class="logo">☕ Café Livéa</div>
+<div class="subtitle">Digitale Stempelkarte – 10 Getränke = 1 gratis</div>
 
-          <div class="card hidden" id="customerAccountCard">
-            <h2 class="title" id="welcomeText">Hallo 💕</h2>
-            <div class="user-box">
-              <div id="emailText"></div>
-              <div class="pill">10 Getränke = 1 frei</div>
-            </div>
-            <p class="muted">Hier siehst du nur deine Stempelkarte. Neue Stempel kann nur der Admin vergeben.</p>
-            <div class="stamps" id="customerStamps"></div>
-            <div class="reward" id="customerRewardText">Aktuell 0 von 10 Stempeln gesammelt.</div>
-            <button class="ghost" onclick="logoutCustomer()">Abmelden</button>
-          </div>
-        </div>
-      </div>
+<div class="tabs">
+<button id="customerTabBtn" class="tab-btn active" onclick="switchTab('customer')">Kunden</button>
+<button id="adminTabBtn" class="tab-btn" onclick="switchTab('admin')">Admin</button>
+</div>
 
-      <div id="adminTab" class="hidden">
-        <div class="grid">
-          <div class="card" id="adminLoginCard">
-            <h2 class="title">🔐 Admin Login</h2>
-            <p class="muted">Nur der Host / Admin darf Stempel hinzufügen oder Gratis-Getränke einlösen.</p>
-            <label for="adminPinInput">Admin PIN</label>
-            <input id="adminPinInput" type="password" placeholder="PIN eingeben" />
-            <button onclick="loginAdmin()">Als Admin einloggen</button>
-            <div class="mini">Standard-PIN in dieser Demo: <strong>1234</strong>. Die kannst du später im Code ändern.</div>
-          </div>
+<div id="customerTab">
 
-          <div class="card hidden" id="adminPanelCard">
-            <h2 class="title">🛠️ Adminbereich</h2>
-            <p class="muted">Hier kannst du Kunden auswählen und Stempel vergeben.</p>
-            <label for="customerSelect">Kunde auswählen</label>
-            <select id="customerSelect"></select>
-            <button onclick="adminAddStamp()">+ 1 Stempel vergeben</button>
-            <button class="secondary" onclick="adminRedeemReward()">Gratis-Getränk einlösen</button>
-            <button class="ghost" onclick="logoutAdmin()">Admin abmelden</button>
-            <div class="mini">Hinweis: In dieser lokalen Demo ist das nur eine einfache PIN-Sperre. Für echte Sicherheit braucht es Backend + Datenbank.</div>
-          </div>
-        </div>
+<div class="card" id="authCard">
+<input id="nameInput" placeholder="Name">
+<input id="emailInput" placeholder="Email">
+<button onclick="registerAccount()">Registrieren</button>
+<button class="ghost" onclick="loginCustomer()">Anmelden</button>
+</div>
 
-        <div class="card hidden" id="adminCustomerListCard">
-          <h2 class="title">👥 Kundenübersicht</h2>
-          <div class="list" id="adminCustomerList"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div class="card hidden" id="customerAccountCard">
+<h3 id="welcomeText"></h3>
+<div id="emailText"></div>
 
-  <script>
-    const STORAGE_KEY = 'livea_accounts';
-    const CURRENT_CUSTOMER_KEY = 'livea_current_user';
-    const ADMIN_LOGGED_KEY = 'livea_admin_logged_in';
-    const ADMIN_PIN = '1234';
+<div class="stamps" id="customerStamps"></div>
 
-    function getAccounts() {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    }
+<div id="customerRewardText"></div>
 
-    function saveAccounts(accounts) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(accounts));
-    }
+<button class="ghost" onclick="logoutCustomer()">Abmelden</button>
+</div>
 
-    function getCurrentCustomerEmail() {
-      return localStorage.getItem(CURRENT_CUSTOMER_KEY) || '';
-    }
+</div>
 
-    function setCurrentCustomerEmail(email) {
-      localStorage.setItem(CURRENT_CUSTOMER_KEY, email);
-    }
+<div id="adminTab" class="hidden">
 
-    function isAdminLoggedIn() {
-      return localStorage.getItem(ADMIN_LOGGED_KEY) === 'true';
-    }
+<div class="card" id="adminLoginCard">
+<input id="adminPinInput" placeholder="Admin PIN">
+<button onclick="loginAdmin()">Admin Login</button>
+</div>
 
-    function setAdminLoggedIn(value) {
-      localStorage.setItem(ADMIN_LOGGED_KEY, value ? 'true' : 'false');
-    }
+<div class="card hidden" id="adminPanelCard">
+<select id="customerSelect"></select>
+<button onclick="adminAddStamp()">Stempel hinzufügen</button>
+<button class="secondary" onclick="adminRedeemReward()">Gratis Getränk</button>
+<button class="ghost" onclick="logoutAdmin()">Logout</button>
+</div>
 
-    function isValidEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
+</div>
 
-    function switchTab(tab) {
-      const customerTab = document.getElementById('customerTab');
-      const adminTab = document.getElementById('adminTab');
-      const customerBtn = document.getElementById('customerTabBtn');
-      const adminBtn = document.getElementById('adminTabBtn');
+</div>
 
-      if (tab === 'customer') {
-        customerTab.classList.remove('hidden');
-        adminTab.classList.add('hidden');
-        customerBtn.classList.add('active');
-        adminBtn.classList.remove('active');
-      } else {
-        adminTab.classList.remove('hidden');
-        customerTab.classList.add('hidden');
-        adminBtn.classList.add('active');
-        customerBtn.classList.remove('active');
-      }
-    }
+<script>
 
-    function registerAccount() {
-      const name = document.getElementById('nameInput').value.trim();
-      const email = document.getElementById('emailInput').value.trim().toLowerCase();
+const STORAGE_KEY='livea_accounts'
+const CURRENT_CUSTOMER_KEY='livea_current_user'
+const ADMIN_LOGGED_KEY='livea_admin'
+const ADMIN_PIN='1234'
 
-      if (!name) {
-        alert('Bitte gib deinen Namen ein 💖');
-        return;
-      }
+function getAccounts(){return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}
+function saveAccounts(a){localStorage.setItem(STORAGE_KEY,JSON.stringify(a))}
 
-      if (!isValidEmail(email)) {
-        alert('Bitte gib eine gültige E-Mail ein ✉️');
-        return;
-      }
+function showLoginAnimation(){
 
-      const accounts = getAccounts();
-      if (!accounts[email]) {
-        accounts[email] = { name, email, stamps: 0 };
-      } else {
-        accounts[email].name = name;
-      }
+const overlay=document.createElement('div')
+overlay.className='animation-overlay'
 
-      saveAccounts(accounts);
-      setCurrentCustomerEmail(email);
-      renderCustomer();
-      renderAdmin();
-    }
+overlay.innerHTML=`
+<div class="hearts">💖 ☕ 💖</div>
+<div>Willkommen bei Café Livéa</div>
+`
 
-    function loginCustomer() {
-      const email = document.getElementById('emailInput').value.trim().toLowerCase();
-      if (!isValidEmail(email)) {
-        alert('Bitte gib deine E-Mail ein ✉️');
-        return;
-      }
-      const accounts = getAccounts();
-      if (!accounts[email]) {
-        alert('Kein Kunde mit dieser E-Mail gefunden.');
-        return;
-      }
-      setCurrentCustomerEmail(email);
-      renderCustomer();
-    }
+document.body.appendChild(overlay)
 
-    function logoutCustomer() {
-      localStorage.removeItem(CURRENT_CUSTOMER_KEY);
-      renderCustomer();
-    }
+setTimeout(()=>{
+overlay.remove()
+},2000)
 
-    function loginAdmin() {
-      const pin = document.getElementById('adminPinInput').value.trim();
-      if (pin !== ADMIN_PIN) {
-        alert('Falsche Admin PIN');
-        return;
-      }
-      setAdminLoggedIn(true);
-      renderAdmin();
-    }
+}
 
-    function logoutAdmin() {
-      setAdminLoggedIn(false);
-      renderAdmin();
-    }
+function switchTab(tab){
 
-    function adminAddStamp() {
-      const email = document.getElementById('customerSelect').value;
-      const accounts = getAccounts();
-      if (!accounts[email]) {
-        alert('Bitte einen Kunden auswählen.');
-        return;
-      }
-      if (accounts[email].stamps < 10) {
-        accounts[email].stamps += 1;
-        saveAccounts(accounts);
-        renderAdmin();
-        renderCustomer();
-      } else {
-        alert('Die Karte dieses Kunden ist schon voll 🎉');
-      }
-    }
+document.getElementById('customerTab').classList.toggle('hidden',tab!=='customer')
+document.getElementById('adminTab').classList.toggle('hidden',tab!=='admin')
 
-    function adminRedeemReward() {
-      const email = document.getElementById('customerSelect').value;
-      const accounts = getAccounts();
-      if (!accounts[email]) {
-        alert('Bitte einen Kunden auswählen.');
-        return;
-      }
-      if (accounts[email].stamps >= 10) {
-        accounts[email].stamps = 0;
-        saveAccounts(accounts);
-        renderAdmin();
-        renderCustomer();
-        alert('Gratis-Getränk für den Kunden eingelöst ☕');
-      } else {
-        alert('Der Kunde hat noch keine 10 Stempel.');
-      }
-    }
+document.getElementById('customerTabBtn').classList.toggle('active',tab==='customer')
+document.getElementById('adminTabBtn').classList.toggle('active',tab==='admin')
 
-    function renderStampGrid(targetId, count) {
-      const box = document.getElementById(targetId);
-      box.innerHTML = '';
-      for (let i = 1; i <= 10; i++) {
-        const el = document.createElement('div');
-        el.className = 'stamp' + (i <= count ? ' active' : '');
-        el.textContent = i <= count ? '☕' : '☆';
-        box.appendChild(el);
-      }
-    }
+}
 
-    function renderCustomer() {
-      const email = getCurrentCustomerEmail();
-      const accounts = getAccounts();
-      const user = accounts[email];
+function registerAccount(){
 
-      const authCard = document.getElementById('authCard');
-      const accountCard = document.getElementById('customerAccountCard');
+const name=document.getElementById('nameInput').value
+const email=document.getElementById('emailInput').value.toLowerCase()
 
-      if (!user) {
-        authCard.classList.remove('hidden');
-        accountCard.classList.add('hidden');
-        return;
-      }
+if(!name||!email){alert('Name und Email eingeben');return}
 
-      authCard.classList.add('hidden');
-      accountCard.classList.remove('hidden');
-      document.getElementById('welcomeText').textContent = 'Hallo, ' + user.name + ' 💕';
-      document.getElementById('emailText').textContent = user.email;
-      document.getElementById('customerRewardText').textContent = user.stamps >= 10
-        ? '🎉 Deine Karte ist voll. Du hast jetzt 1 Getränk gratis.'
-        : 'Aktuell ' + user.stamps + ' von 10 Stempeln gesammelt.';
-      renderStampGrid('customerStamps', user.stamps);
-    }
+const accounts=getAccounts()
 
-    function renderAdmin() {
-      const loggedIn = isAdminLoggedIn();
-      const accounts = getAccounts();
-      const select = document.getElementById('customerSelect');
-      const list = document.getElementById('adminCustomerList');
+accounts[email]={name,email,stamps:0}
 
-      document.getElementById('adminLoginCard').classList.toggle('hidden', loggedIn);
-      document.getElementById('adminPanelCard').classList.toggle('hidden', !loggedIn);
-      document.getElementById('adminCustomerListCard').classList.toggle('hidden', !loggedIn);
+saveAccounts(accounts)
 
-      if (!loggedIn) return;
+localStorage.setItem(CURRENT_CUSTOMER_KEY,email)
 
-      const emails = Object.keys(accounts);
-      select.innerHTML = '';
-      if (emails.length === 0) {
-        const opt = document.createElement('option');
-        opt.value = '';
-        opt.textContent = 'Noch keine Kunden registriert';
-        select.appendChild(opt);
-      } else {
-        emails.forEach(email => {
-          const user = accounts[email];
-          const opt = document.createElement('option');
-          opt.value = email;
-          opt.textContent = user.name + ' – ' + user.email;
-          select.appendChild(opt);
-        });
-      }
+showLoginAnimation()
 
-      list.innerHTML = '';
-      if (emails.length === 0) {
-        list.innerHTML = '<div class="muted">Noch keine Kunden vorhanden.</div>';
-        return;
-      }
+renderCustomer()
+renderAdmin()
 
-      emails.forEach(email => {
-        const user = accounts[email];
-        const item = document.createElement('div');
-        item.className = 'list-item';
-        item.innerHTML = `
-          <div class="list-head">
-            <strong>${user.name}</strong>
-            <span class="pill">${user.stamps}/10 Stempel</span>
-          </div>
-          <div class="tiny">${user.email}</div>
-        `;
-        list.appendChild(item);
-      });
-    }
+}
 
-    renderCustomer();
-    renderAdmin();
-  </script>
+function loginCustomer(){
+
+const email=document.getElementById('emailInput').value.toLowerCase()
+
+const accounts=getAccounts()
+
+if(!accounts[email]){alert('Account nicht gefunden');return}
+
+localStorage.setItem(CURRENT_CUSTOMER_KEY,email)
+
+showLoginAnimation()
+
+renderCustomer()
+
+}
+
+function logoutCustomer(){
+localStorage.removeItem(CURRENT_CUSTOMER_KEY)
+renderCustomer()
+}
+
+function loginAdmin(){
+
+const pin=document.getElementById('adminPinInput').value
+
+if(pin!==ADMIN_PIN){alert('Falsche PIN');return}
+
+localStorage.setItem(ADMIN_LOGGED_KEY,'true')
+
+renderAdmin()
+
+}
+
+function logoutAdmin(){
+localStorage.removeItem(ADMIN_LOGGED_KEY)
+renderAdmin()
+}
+
+function adminAddStamp(){
+
+const email=document.getElementById('customerSelect').value
+const accounts=getAccounts()
+
+if(accounts[email].stamps<10){
+accounts[email].stamps++
+saveAccounts(accounts)
+renderCustomer()
+renderAdmin()
+}
+
+}
+
+function adminRedeemReward(){
+
+const email=document.getElementById('customerSelect').value
+const accounts=getAccounts()
+
+if(accounts[email].stamps>=10){
+accounts[email].stamps=0
+saveAccounts(accounts)
+renderCustomer()
+renderAdmin()
+alert('Gratis Getränk eingelöst')
+}
+
+}
+
+function renderStamps(id,count){
+
+const box=document.getElementById(id)
+box.innerHTML=''
+
+for(let i=1;i<=10;i++){
+
+const el=document.createElement('div')
+el.className='stamp'+(i<=count?' active':'')
+el.textContent=i<=count?'☕':'☆'
+
+box.appendChild(el)
+
+}
+
+}
+
+function renderCustomer(){
+
+const email=localStorage.getItem(CURRENT_CUSTOMER_KEY)
+const accounts=getAccounts()
+const user=accounts[email]
+
+if(!user){
+
+document.getElementById('authCard').classList.remove('hidden')
+document.getElementById('customerAccountCard').classList.add('hidden')
+
+return
+}
+
+
+document.getElementById('authCard').classList.add('hidden')
+document.getElementById('customerAccountCard').classList.remove('hidden')
+
+
+document.getElementById('welcomeText').innerText='Hallo '+user.name
+
+document.getElementById('emailText').innerText=user.email
+
+
+document.getElementById('customerRewardText').innerText=
+user.stamps>=10?'🎉 Gratis Getränk verfügbar':'Stempel: '+user.stamps+'/10'
+
+renderStamps('customerStamps',user.stamps)
+
+}
+
+function renderAdmin(){
+
+const logged=localStorage.getItem(ADMIN_LOGGED_KEY)==='true'
+
+const accounts=getAccounts()
+
+
+document.getElementById('adminLoginCard').classList.toggle('hidden',logged)
+
+document.getElementById('adminPanelCard').classList.toggle('hidden',!logged)
+
+if(!logged)return
+
+
+const select=document.getElementById('customerSelect')
+
+select.innerHTML=''
+
+Object.values(accounts).forEach(u=>{
+
+const opt=document.createElement('option')
+
+opt.value=u.email
+
+opt.textContent=u.name+' ('+u.stamps+'/10)'
+
+select.appendChild(opt)
+
+})
+
+}
+
+renderCustomer()
+renderAdmin()
+
+</script>
+
 </body>
 </html>
+
 
 
 
