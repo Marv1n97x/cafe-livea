@@ -15,20 +15,25 @@
 --white:#fffdfd;
 }
 
+*{box-sizing:border-box}
+
 body{
 margin:0;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
 background:linear-gradient(135deg,var(--pink-soft),var(--mint));
 padding:20px;
+color:var(--text);
 }
 
 .app{
 max-width:900px;
 margin:auto;
-background:white;
+background:rgba(255,255,255,0.96);
 border-radius:30px;
 padding:20px;
-box-shadow:0 20px 40px rgba(0,0,0,0.1);
+box-shadow:0 20px 40px rgba(0,0,0,0.08);
+position:relative;
+overflow:hidden;
 }
 
 .logo{
@@ -42,6 +47,7 @@ color:#de4f9c;
 text-align:center;
 font-size:14px;
 margin-bottom:20px;
+opacity:.85;
 }
 
 .tabs{
@@ -58,6 +64,7 @@ border-radius:14px;
 font-weight:700;
 cursor:pointer;
 background:#fff4fa;
+color:#c75093;
 }
 
 .tab-btn.active{
@@ -71,6 +78,7 @@ border:1px solid #ffe3f0;
 border-radius:20px;
 padding:20px;
 margin-bottom:15px;
+box-shadow:0 10px 25px rgba(255,216,234,.25);
 }
 
 input,select{
@@ -79,6 +87,7 @@ padding:12px;
 border-radius:12px;
 border:1px solid #ffd3e7;
 margin-bottom:10px;
+background:#fffafd;
 }
 
 button{
@@ -121,38 +130,73 @@ align-items:center;
 justify-content:center;
 font-size:22px;
 border:2px dashed #f4b7d3;
+background:#fffafd;
 }
 
 .stamp.active{
 background:linear-gradient(135deg,#ffc6e1,#c4f7e6);
 }
 
-/* LOGIN ANIMATION */
-.animation-overlay{
+/* Overlay animations */
+.fx-overlay{
 position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(255,255,255,0.9);
+inset:0;
+background:radial-gradient(circle at center, rgba(255,255,255,.85), rgba(255,255,255,.65));
 display:flex;
 align-items:center;
 justify-content:center;
 flex-direction:column;
-font-size:40px;
-color:#ff72b6;
-animation:fadeIn 0.4s;
-z-index:999;
+gap:14px;
+z-index:9999;
+pointer-events:none;
+animation:fadeIn .25s ease;
+overflow:hidden;
 }
 
-.hearts{
-font-size:50px;
-animation:pop 1s infinite alternate;
+.fx-title{
+font-size:30px;
+font-weight:800;
+color:#df4f9e;
+text-align:center;
+padding:0 20px;
+text-shadow:0 4px 14px rgba(255,114,182,.18);
+animation:floatText 1.8s ease-in-out infinite alternate;
 }
 
-@keyframes pop{
-from{transform:scale(1)}
-to{transform:scale(1.3)}
+.fx-sub{
+font-size:15px;
+color:#8d6380;
+text-align:center;
+padding:0 24px;
+max-width:500px;
+}
+
+.floating-icon{
+position:absolute;
+font-size:34px;
+animation:driftUp linear forwards;
+filter:drop-shadow(0 6px 10px rgba(0,0,0,.08));
+opacity:.95;
+}
+
+.confetti-piece{
+position:absolute;
+width:12px;
+height:18px;
+border-radius:4px;
+animation:confettiFall linear forwards;
+opacity:.95;
+}
+
+@keyframes driftUp{
+0%{transform:translateY(40px) scale(.7) rotate(0deg);opacity:0}
+15%{opacity:1}
+100%{transform:translateY(-120vh) scale(1.2) rotate(360deg);opacity:0}
+}
+
+@keyframes confettiFall{
+0%{transform:translateY(-10vh) rotate(0deg) translateX(0);opacity:1}
+100%{transform:translateY(120vh) rotate(760deg) translateX(60px);opacity:0}
 }
 
 @keyframes fadeIn{
@@ -160,276 +204,264 @@ from{opacity:0}
 to{opacity:1}
 }
 
+@keyframes floatText{
+from{transform:translateY(0)}
+to{transform:translateY(-8px)}
+}
+
+@media (max-width:700px){
+.tabs{grid-template-columns:1fr}
+.fx-title{font-size:24px}
+.floating-icon{font-size:28px}
+}
 </style>
 </head>
 
 <body>
-
 <div class="app">
+  <div class="logo">☕ Café Livéa</div>
+  <div class="subtitle">Digitale Stempelkarte – 10 Getränke = 1 gratis</div>
 
-<div class="logo">☕ Café Livéa</div>
-<div class="subtitle">Digitale Stempelkarte – 10 Getränke = 1 gratis</div>
+  <div class="tabs">
+    <button id="customerTabBtn" class="tab-btn active" onclick="switchTab('customer')">Kunden</button>
+    <button id="adminTabBtn" class="tab-btn" onclick="switchTab('admin')">Admin</button>
+  </div>
 
-<div class="tabs">
-<button id="customerTabBtn" class="tab-btn active" onclick="switchTab('customer')">Kunden</button>
-<button id="adminTabBtn" class="tab-btn" onclick="switchTab('admin')">Admin</button>
-</div>
+  <div id="customerTab">
+    <div class="card" id="authCard">
+      <input id="nameInput" placeholder="Name">
+      <input id="emailInput" placeholder="Email">
+      <button onclick="registerAccount()">Registrieren</button>
+      <button class="ghost" onclick="loginCustomer()">Anmelden</button>
+    </div>
 
-<div id="customerTab">
+    <div class="card hidden" id="customerAccountCard">
+      <h3 id="welcomeText"></h3>
+      <div id="emailText"></div>
+      <div class="stamps" id="customerStamps"></div>
+      <div id="customerRewardText"></div>
+      <button class="ghost" onclick="logoutCustomer()">Abmelden</button>
+    </div>
+  </div>
 
-<div class="card" id="authCard">
-<input id="nameInput" placeholder="Name">
-<input id="emailInput" placeholder="Email">
-<button onclick="registerAccount()">Registrieren</button>
-<button class="ghost" onclick="loginCustomer()">Anmelden</button>
-</div>
+  <div id="adminTab" class="hidden">
+    <div class="card" id="adminLoginCard">
+      <input id="adminPinInput" type="password" placeholder="Admin PIN">
+      <button onclick="loginAdmin()">Admin Login</button>
+    </div>
 
-<div class="card hidden" id="customerAccountCard">
-<h3 id="welcomeText"></h3>
-<div id="emailText"></div>
-
-<div class="stamps" id="customerStamps"></div>
-
-<div id="customerRewardText"></div>
-
-<button class="ghost" onclick="logoutCustomer()">Abmelden</button>
-</div>
-
-</div>
-
-<div id="adminTab" class="hidden">
-
-<div class="card" id="adminLoginCard">
-<input id="adminPinInput" placeholder="Admin PIN">
-<button onclick="loginAdmin()">Admin Login</button>
-</div>
-
-<div class="card hidden" id="adminPanelCard">
-<select id="customerSelect"></select>
-<button onclick="adminAddStamp()">Stempel hinzufügen</button>
-<button class="secondary" onclick="adminRedeemReward()">Gratis Getränk</button>
-<button class="ghost" onclick="logoutAdmin()">Logout</button>
-</div>
-
-</div>
-
+    <div class="card hidden" id="adminPanelCard">
+      <select id="customerSelect"></select>
+      <button onclick="adminAddStamp()">Stempel hinzufügen</button>
+      <button class="secondary" onclick="adminRedeemReward()">Gratis Getränk</button>
+      <button class="ghost" onclick="logoutAdmin()">Logout</button>
+    </div>
+  </div>
 </div>
 
 <script>
+const STORAGE_KEY='livea_accounts';
+const CURRENT_CUSTOMER_KEY='livea_current_user';
+const ADMIN_LOGGED_KEY='livea_admin';
+const ADMIN_PIN='1234';
 
-const STORAGE_KEY='livea_accounts'
-const CURRENT_CUSTOMER_KEY='livea_current_user'
-const ADMIN_LOGGED_KEY='livea_admin'
-const ADMIN_PIN='1234'
+function getAccounts(){return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}
+function saveAccounts(a){localStorage.setItem(STORAGE_KEY,JSON.stringify(a));}
 
-function getAccounts(){return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}
-function saveAccounts(a){localStorage.setItem(STORAGE_KEY,JSON.stringify(a))}
+const loginThemes=[
+  {title:'Willkommen bei Café Livéa 💖',sub:'Schön, dass du da bist.',icons:['☕','💖','🌸','✨']},
+  {title:'Matcha Mood aktiviert 🍵',sub:'Deine Stempelkarte wartet schon.',icons:['🍵','💚','✨','🌿']},
+  {title:'Sweet Tiramisu Vibes 🍰',sub:'Einloggen und Lieblingsmomente sammeln.',icons:['🍰','🤎','☕','💫']},
+  {title:'Coffee Love Moment ☕',sub:'Heute wird gestempelt.',icons:['☕','🩷','💕','✨']}
+];
 
-function showLoginAnimation(){
+const fullStampThemes=[
+  {title:'Stempelkarte voll 🎉',sub:'10 von 10 erreicht. Dein Gratis-Getränk wartet.',icons:['☕','🎉','💖','✨']},
+  {title:'Belohnung freigeschaltet 🍵',sub:'Du hast genug gesammelt.',icons:['🍵','🌟','💚','🎊']},
+  {title:'Tiramisu Celebration 🍰',sub:'Zeit für deinen süßen Bonus.',icons:['🍰','🎉','🤎','✨']}
+];
 
-const overlay=document.createElement('div')
-overlay.className='animation-overlay'
+const rewardThemes=[
+  {title:'Gratis Getränk eingelöst ☕',sub:'Viel Freude bei deinem Genussmoment.',icons:['☕','🎁','💖','🎉']},
+  {title:'Matcha Geschenk für dich 🍵',sub:'Deine Karte wurde erfolgreich eingelöst.',icons:['🍵','🎊','💚','✨']},
+  {title:'Sweet Reward Moment 🍰',sub:'Café Livéa sagt danke.',icons:['🍰','🎁','💫','💖']}
+];
 
-overlay.innerHTML=`
-<div class="hearts">💖 ☕ 💖</div>
-<div>Willkommen bei Café Livéa</div>
-`
+function randomItem(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
+}
 
-document.body.appendChild(overlay)
+function showCelebration(type='login'){
+  const themePool = type==='full' ? fullStampThemes : type==='reward' ? rewardThemes : loginThemes;
+  const theme = randomItem(themePool);
+  const overlay=document.createElement('div');
+  overlay.className='fx-overlay';
+  overlay.innerHTML=`<div class="fx-title">${theme.title}</div><div class="fx-sub">${theme.sub}</div>`;
+  document.body.appendChild(overlay);
 
-setTimeout(()=>{
-overlay.remove()
-},2000)
+  const iconCount = type==='reward' ? 26 : type==='full' ? 22 : 18;
+  for(let i=0;i<iconCount;i++){
+    const icon=document.createElement('div');
+    icon.className='floating-icon';
+    icon.textContent=theme.icons[Math.floor(Math.random()*theme.icons.length)];
+    icon.style.left=Math.random()*100+'vw';
+    icon.style.bottom=(-10 - Math.random()*20)+'px';
+    icon.style.animationDuration=(2.6 + Math.random()*1.8)+'s';
+    icon.style.animationDelay=(Math.random()*0.5)+'s';
+    icon.style.transform=`scale(${0.8+Math.random()*0.8})`;
+    overlay.appendChild(icon);
+  }
 
+  const confettiCount = type==='reward' ? 70 : type==='full' ? 50 : 28;
+  const confettiColors=['#ff72b6','#ffd8ea','#b8f5e1','#7de8c8','#fff0a8','#ffffff'];
+  for(let i=0;i<confettiCount;i++){
+    const piece=document.createElement('div');
+    piece.className='confetti-piece';
+    piece.style.left=Math.random()*100+'vw';
+    piece.style.top=(-10 - Math.random()*20)+'vh';
+    piece.style.background=confettiColors[Math.floor(Math.random()*confettiColors.length)];
+    piece.style.animationDuration=(2.5 + Math.random()*2.2)+'s';
+    piece.style.animationDelay=(Math.random()*0.7)+'s';
+    piece.style.transform=`rotate(${Math.random()*360}deg)`;
+    overlay.appendChild(piece);
+  }
+
+  setTimeout(()=>overlay.remove(), type==='reward' ? 2600 : 2200);
 }
 
 function switchTab(tab){
-
-document.getElementById('customerTab').classList.toggle('hidden',tab!=='customer')
-document.getElementById('adminTab').classList.toggle('hidden',tab!=='admin')
-
-document.getElementById('customerTabBtn').classList.toggle('active',tab==='customer')
-document.getElementById('adminTabBtn').classList.toggle('active',tab==='admin')
-
+  document.getElementById('customerTab').classList.toggle('hidden',tab!=='customer');
+  document.getElementById('adminTab').classList.toggle('hidden',tab!=='admin');
+  document.getElementById('customerTabBtn').classList.toggle('active',tab==='customer');
+  document.getElementById('adminTabBtn').classList.toggle('active',tab==='admin');
 }
 
 function registerAccount(){
-
-const name=document.getElementById('nameInput').value
-const email=document.getElementById('emailInput').value.toLowerCase()
-
-if(!name||!email){alert('Name und Email eingeben');return}
-
-const accounts=getAccounts()
-
-accounts[email]={name,email,stamps:0}
-
-saveAccounts(accounts)
-
-localStorage.setItem(CURRENT_CUSTOMER_KEY,email)
-
-showLoginAnimation()
-
-renderCustomer()
-renderAdmin()
-
+  const name=document.getElementById('nameInput').value.trim();
+  const email=document.getElementById('emailInput').value.trim().toLowerCase();
+  if(!name||!email){alert('Name und Email eingeben');return;}
+  const accounts=getAccounts();
+  accounts[email]={name,email,stamps:0};
+  saveAccounts(accounts);
+  localStorage.setItem(CURRENT_CUSTOMER_KEY,email);
+  showCelebration('login');
+  renderCustomer();
+  renderAdmin();
 }
 
 function loginCustomer(){
-
-const email=document.getElementById('emailInput').value.toLowerCase()
-
-const accounts=getAccounts()
-
-if(!accounts[email]){alert('Account nicht gefunden');return}
-
-localStorage.setItem(CURRENT_CUSTOMER_KEY,email)
-
-showLoginAnimation()
-
-renderCustomer()
-
+  const email=document.getElementById('emailInput').value.trim().toLowerCase();
+  const accounts=getAccounts();
+  if(!accounts[email]){alert('Account nicht gefunden');return;}
+  localStorage.setItem(CURRENT_CUSTOMER_KEY,email);
+  showCelebration('login');
+  renderCustomer();
 }
 
 function logoutCustomer(){
-localStorage.removeItem(CURRENT_CUSTOMER_KEY)
-renderCustomer()
+  localStorage.removeItem(CURRENT_CUSTOMER_KEY);
+  renderCustomer();
 }
 
 function loginAdmin(){
-
-const pin=document.getElementById('adminPinInput').value
-
-if(pin!==ADMIN_PIN){alert('Falsche PIN');return}
-
-localStorage.setItem(ADMIN_LOGGED_KEY,'true')
-
-renderAdmin()
-
+  const pin=document.getElementById('adminPinInput').value;
+  if(pin!==ADMIN_PIN){alert('Falsche PIN');return;}
+  localStorage.setItem(ADMIN_LOGGED_KEY,'true');
+  renderAdmin();
 }
 
 function logoutAdmin(){
-localStorage.removeItem(ADMIN_LOGGED_KEY)
-renderAdmin()
+  localStorage.removeItem(ADMIN_LOGGED_KEY);
+  renderAdmin();
 }
 
 function adminAddStamp(){
-
-const email=document.getElementById('customerSelect').value
-const accounts=getAccounts()
-
-if(accounts[email].stamps<10){
-accounts[email].stamps++
-saveAccounts(accounts)
-renderCustomer()
-renderAdmin()
-}
-
+  const email=document.getElementById('customerSelect').value;
+  const accounts=getAccounts();
+  if(!accounts[email]){alert('Kunde nicht gefunden');return;}
+  const before=accounts[email].stamps;
+  if(before<10){
+    accounts[email].stamps++;
+    saveAccounts(accounts);
+    renderCustomer();
+    renderAdmin();
+    if(accounts[email].stamps===10){
+      showCelebration('full');
+    }
+  }
 }
 
 function adminRedeemReward(){
-
-const email=document.getElementById('customerSelect').value
-const accounts=getAccounts()
-
-if(accounts[email].stamps>=10){
-accounts[email].stamps=0
-saveAccounts(accounts)
-renderCustomer()
-renderAdmin()
-alert('Gratis Getränk eingelöst')
-}
-
+  const email=document.getElementById('customerSelect').value;
+  const accounts=getAccounts();
+  if(!accounts[email]){alert('Kunde nicht gefunden');return;}
+  if(accounts[email].stamps>=10){
+    accounts[email].stamps=0;
+    saveAccounts(accounts);
+    renderCustomer();
+    renderAdmin();
+    showCelebration('reward');
+    alert('Gratis Getränk eingelöst');
+  }
 }
 
 function renderStamps(id,count){
-
-const box=document.getElementById(id)
-box.innerHTML=''
-
-for(let i=1;i<=10;i++){
-
-const el=document.createElement('div')
-el.className='stamp'+(i<=count?' active':'')
-el.textContent=i<=count?'☕':'☆'
-
-box.appendChild(el)
-
-}
-
+  const box=document.getElementById(id);
+  box.innerHTML='';
+  for(let i=1;i<=10;i++){
+    const el=document.createElement('div');
+    el.className='stamp'+(i<=count?' active':'');
+    el.textContent=i<=count?'☕':'☆';
+    box.appendChild(el);
+  }
 }
 
 function renderCustomer(){
-
-const email=localStorage.getItem(CURRENT_CUSTOMER_KEY)
-const accounts=getAccounts()
-const user=accounts[email]
-
-if(!user){
-
-document.getElementById('authCard').classList.remove('hidden')
-document.getElementById('customerAccountCard').classList.add('hidden')
-
-return
-}
-
-
-document.getElementById('authCard').classList.add('hidden')
-document.getElementById('customerAccountCard').classList.remove('hidden')
-
-
-document.getElementById('welcomeText').innerText='Hallo '+user.name
-
-document.getElementById('emailText').innerText=user.email
-
-
-document.getElementById('customerRewardText').innerText=
-user.stamps>=10?'🎉 Gratis Getränk verfügbar':'Stempel: '+user.stamps+'/10'
-
-renderStamps('customerStamps',user.stamps)
-
+  const email=localStorage.getItem(CURRENT_CUSTOMER_KEY);
+  const accounts=getAccounts();
+  const user=accounts[email];
+  if(!user){
+    document.getElementById('authCard').classList.remove('hidden');
+    document.getElementById('customerAccountCard').classList.add('hidden');
+    return;
+  }
+  document.getElementById('authCard').classList.add('hidden');
+  document.getElementById('customerAccountCard').classList.remove('hidden');
+  document.getElementById('welcomeText').innerText='Hallo '+user.name;
+  document.getElementById('emailText').innerText=user.email;
+  document.getElementById('customerRewardText').innerText=user.stamps>=10?'🎉 Gratis Getränk verfügbar':'Stempel: '+user.stamps+'/10';
+  renderStamps('customerStamps',user.stamps);
 }
 
 function renderAdmin(){
-
-const logged=localStorage.getItem(ADMIN_LOGGED_KEY)==='true'
-
-const accounts=getAccounts()
-
-
-document.getElementById('adminLoginCard').classList.toggle('hidden',logged)
-
-document.getElementById('adminPanelCard').classList.toggle('hidden',!logged)
-
-if(!logged)return
-
-
-const select=document.getElementById('customerSelect')
-
-select.innerHTML=''
-
-Object.values(accounts).forEach(u=>{
-
-const opt=document.createElement('option')
-
-opt.value=u.email
-
-opt.textContent=u.name+' ('+u.stamps+'/10)'
-
-select.appendChild(opt)
-
-})
-
+  const logged=localStorage.getItem(ADMIN_LOGGED_KEY)==='true';
+  const accounts=getAccounts();
+  document.getElementById('adminLoginCard').classList.toggle('hidden',logged);
+  document.getElementById('adminPanelCard').classList.toggle('hidden',!logged);
+  if(!logged)return;
+  const select=document.getElementById('customerSelect');
+  select.innerHTML='';
+  const users=Object.values(accounts);
+  if(users.length===0){
+    const opt=document.createElement('option');
+    opt.textContent='Keine Kunden vorhanden';
+    opt.value='';
+    select.appendChild(opt);
+    return;
+  }
+  users.forEach(u=>{
+    const opt=document.createElement('option');
+    opt.value=u.email;
+    opt.textContent=u.name+' ('+u.stamps+'/10)';
+    select.appendChild(opt);
+  });
 }
 
-renderCustomer()
-renderAdmin()
-
+renderCustomer();
+renderAdmin();
 </script>
-
 </body>
 </html>
-
 
 
 
