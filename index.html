@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Café Livéa Pro</title>
+<style>
+:root{
+--pink:#ff4fa3;
+--mint:#66f2c6;
+--dark:#1e1e1e;
+--light:#ffffff;
+}
+
+body{
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+background:linear-gradient(135deg,var(--mint),var(--pink));
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.app{
+width:1000px;
+max-width:95%;
+background:var(--light);
+border-radius:24px;
+box-shadow:0 30px 60px rgba(0,0,0,0.15);
+padding:30px 35px;
+}
+
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+}
+
+.logo{
+font-size:26px;
+font-weight:700;
+}
+
+.badge{
+background:var(--pink);
+color:white;
+padding:6px 12px;
+border-radius:999px;
+font-size:12px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:25px;
+}
+
+.menu{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+}
+
+.card{
+border:2px solid #f3f3f3;
+border-radius:16px;
+padding:18px;
+transition:0.2s;
+}
+
+.card:hover{
+transform:translateY(-4px);
+border-color:var(--mint);
+}
+
+.card h3{
+margin:0 0 5px 0;
+}
+
+.price{
+font-weight:700;
+margin:8px 0;
+}
+
+button{
+background:var(--pink);
+color:white;
+border:none;
+padding:8px 12px;
+border-radius:10px;
+font-weight:600;
+cursor:pointer;
+}
+
+button:hover{
+opacity:0.9;
+}
+
+.cart{
+border:2px solid #f3f3f3;
+border-radius:16px;
+padding:18px;
+}
+
+.cart h2{
+margin-top:0;
+}
+
+.cart-item{
+display:flex;
+justify-content:space-between;
+margin-bottom:8px;
+font-size:14px;
+}
+
+.total{
+border-top:2px solid #eee;
+padding-top:10px;
+margin-top:10px;
+font-weight:700;
+}
+
+.checkout{
+margin-top:12px;
+width:100%;
+background:var(--mint);
+color:#000;
+font-weight:700;
+}
+
+footer{
+margin-top:20px;
+text-align:center;
+font-size:12px;
+color:#777;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+<div class="logo">☕ Café Livéa</div>
+<div class="badge">Local App</div>
+</header>
+
+<div class="grid">
+
+<div class="menu" id="menu"></div>
+
+<div class="cart">
+<h2>🧾 Bestellung</h2>
+<div id="cartItems"></div>
+<div class="total" id="total">Gesamt: 0 €</div>
+<button class="checkout" onclick="checkout()">Bestellung abschließen</button>
+</div>
+
+</div>
+
+<footer>
+Café Livéa • Modern Coffee Experience
+</footer>
+
+</div>
+
+<script>
+
+const products=[
+{name:"Latte",price:3.8},
+{name:"Cappuccino",price:3.6},
+{name:"Flat White",price:4.0},
+{name:"Matcha Latte",price:4.5},
+{name:"Croissant",price:2.9},
+{name:"Cheesecake",price:4.2}
+]
+
+let cart=[]
+
+const menu=document.getElementById("menu")
+
+products.forEach(p=>{
+
+const card=document.createElement("div")
+card.className="card"
+
+card.innerHTML=`
+<h3>${p.name}</h3>
+<div class="price">${p.price.toFixed(2)} €</div>
+<button onclick="addItem('${p.name}',${p.price})">Hinzufügen</button>
+`
+
+menu.appendChild(card)
+
+})
+
+function addItem(name,price){
+cart.push({name,price})
+renderCart()
+}
+
+function renderCart(){
+
+const container=document.getElementById("cartItems")
+container.innerHTML=""
+
+let total=0
+
+cart.forEach(item=>{
+
+const row=document.createElement("div")
+row.className="cart-item"
+
+row.innerHTML=`
+<span>${item.name}</span>
+<span>${item.price.toFixed(2)} €</span>
+`
+
+container.appendChild(row)
+
+total+=item.price
+
+})
+
+document.getElementById("total").innerText="Gesamt: "+total.toFixed(2)+" €"
+
+}
+
+function checkout(){
+
+if(cart.length===0){
+alert("Noch nichts bestellt ☕")
+return
+}
+
+alert("Danke für deine Bestellung bei Café Livéa ☕")
+cart=[]
+renderCart()
+
+}
+
+</script>
+
+</body>
+</html>
