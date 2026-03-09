@@ -219,13 +219,8 @@ to{transform:translateY(-8px)}
 
 <body>
 <div class="app">
-  <div class="logo">☕ Café Livéa</div>
+  <div class="logo" id="logoTrigger">☕ Café Livéa</div>
   <div class="subtitle">Digitale Stempelkarte – 10 Getränke = 1 gratis</div>
-
-  <div class="tabs">
-    <button id="customerTabBtn" class="tab-btn active" onclick="switchTab('customer')">Kunden</button>
-    <button id="adminTabBtn" class="tab-btn" onclick="switchTab('admin')">Admin</button>
-  </div>
 
   <div id="customerTab">
     <div class="card" id="authCard">
@@ -264,6 +259,8 @@ const STORAGE_KEY='livea_accounts';
 const CURRENT_CUSTOMER_KEY='livea_current_user';
 const ADMIN_LOGGED_KEY='livea_admin';
 const ADMIN_PIN='1234';
+let logoTapCount=0;
+let logoTapTimer=null;
 
 function getAccounts(){return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}
 function saveAccounts(a){localStorage.setItem(STORAGE_KEY,JSON.stringify(a));}
@@ -332,8 +329,20 @@ function showCelebration(type='login'){
 function switchTab(tab){
   document.getElementById('customerTab').classList.toggle('hidden',tab!=='customer');
   document.getElementById('adminTab').classList.toggle('hidden',tab!=='admin');
-  document.getElementById('customerTabBtn').classList.toggle('active',tab==='customer');
-  document.getElementById('adminTabBtn').classList.toggle('active',tab==='admin');
+}
+
+function setupHiddenAdminAccess(){
+  const logo=document.getElementById('logoTrigger');
+  logo.addEventListener('click',()=>{
+    logoTapCount++;
+    clearTimeout(logoTapTimer);
+    logoTapTimer=setTimeout(()=>{logoTapCount=0;},1600);
+    if(logoTapCount>=5){
+      logoTapCount=0;
+      document.getElementById('adminTab').classList.remove('hidden');
+      switchTab('admin');
+    }
+  });
 }
 
 function registerAccount(){
@@ -345,8 +354,10 @@ function registerAccount(){
   saveAccounts(accounts);
   localStorage.setItem(CURRENT_CUSTOMER_KEY,email);
   showCelebration('login');
-  renderCustomer();
-  renderAdmin();
+  setupHiddenAdminAccess();
+switchTab('customer');
+renderCustomer();
+renderAdmin();
 }
 
 function loginCustomer(){
@@ -462,6 +473,4 @@ renderAdmin();
 </script>
 </body>
 </html>
-
-
 
