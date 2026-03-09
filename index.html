@@ -290,7 +290,7 @@ opacity:.95;
       <input id="emailInput" placeholder="Email">
       <button onclick="registerAccount()">Registrieren</button>
       <button class="ghost" onclick="loginCustomer()">Anmelden</button>
-      <div class="muted">Adminbereich ist versteckt und öffnet sich nur per 3x Klick auf das Logo + PIN.</div>
+      <div class="muted"></div>
     </div>
 
     <div class="card hidden" id="customerAccountCard">
@@ -303,7 +303,7 @@ opacity:.95;
       <div class="qr-box">
         <strong>Dein Kunden-QR-Code</strong>
         <div class="muted">Der Admin kann deinen Account schnell erkennen und auswählen.</div>
-        <img id="qrImage" class="qr-code" alt="Kunden QR Code" />
+        <canvas id="qrCanvas" class="qr-code" aria-label="Kunden QR Code"></canvas>
         <div class="muted" id="qrText"></div>
       </div>
 
@@ -322,6 +322,14 @@ opacity:.95;
       <button onclick="adminAddStamp()">Stempel hinzufügen</button>
       <button class="secondary" onclick="adminRedeemReward()">Gratis Getränk</button>
       <button class="ghost" onclick="logoutAdmin()">Logout</button>
+
+      <button class="secondary" onclick="toggleQrScanner()">QR-Code scannen</button>
+      <div id="scannerWrap" class="qr-box hidden">
+        <strong>Kunden-QR scannen</strong>
+        <div class="muted">Erlaubt Kamerazugriff und hält den QR-Code vor die Kamera.</div>
+        <video id="scannerVideo" playsinline style="width:100%;border-radius:16px;margin-top:12px;background:#000;"></video>
+        <button class="ghost" onclick="stopQrScanner()">Scanner schließen</button>
+      </div>
 
       <div class="stats-grid">
         <div class="stat-card">
@@ -343,13 +351,18 @@ opacity:.95;
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
 const STORAGE_KEY='livea_accounts';
 const CURRENT_CUSTOMER_KEY='livea_current_user';
 const ADMIN_LOGGED_KEY='livea_admin';
-const ADMIN_PIN='1234';
+const ADMIN_PIN='9824';
 let logoTapCount=0;
 let logoTapTimer=null;
+let scannerStream=null;
+let scannerRunning=false;
+let scannerFrame=null;
 
 function getAccounts(){return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}
 function saveAccounts(a){localStorage.setItem(STORAGE_KEY,JSON.stringify(a));}
@@ -452,8 +465,22 @@ function generateQrValue(user){
 
 function updateCustomerQr(user){
   const qrValue = generateQrValue(user);
-  const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=' + encodeURIComponent(qrValue);
-  document.getElementById('qrImage').src = qrUrl;
+  const canvas = document.getElementById('qrCanvas');
+  if(!canvas || typeof QRCode === 'undefined') return;
+
+  QRCode.toCanvas(canvas, qrValue, {
+    width: 220,
+    margin: 2,
+    color: {
+      dark: '#d7549a',
+      light: '#ffffff'
+    }
+  }, function (error) {
+    if (error) {
+      console.error(error);
+    }
+  });
+
   document.getElementById('qrText').textContent = user.email;
 }
 
@@ -494,6 +521,7 @@ function loginAdmin(){
 }
 
 function logoutAdmin(){
+  stopQrScanner();
   localStorage.removeItem(ADMIN_LOGGED_KEY);
   document.getElementById('adminTab').classList.add('hidden');
   switchTab('customer');
@@ -537,6 +565,85 @@ function adminRedeemReward(){
     renderAdmin();
     showCelebration('reward');
     alert('Gratis Getränk eingelöst');
+  }
+}
+
+function toggleQrScanner(){
+  const wrap=document.getElementById('scannerWrap');
+  if(!wrap) return;
+  if(scannerRunning){
+    stopQrScanner();
+    return;
+  }
+  wrap.classList.remove('hidden');
+  startQrScanner();
+}
+
+async function startQrScanner(){
+  const video=document.getElementById('scannerVideo');
+  const wrap=document.getElementById('scannerWrap');
+  if(!video || !wrap) return;
+
+  try{
+    scannerStream=await navigator.mediaDevices.getUserMedia({
+      video:{ facingMode:'environment' },
+      audio:false
+    });
+    video.srcObject=scannerStream;
+    await video.play();
+    scannerRunning=true;
+    scanQrFrame();
+  }catch(err){
+    alert('Kamera konnte nicht geöffnet werden.');
+    console.error(err);
+    wrap.classList.add('hidden');
+  }
+}
+
+function stopQrScanner(){
+  const wrap=document.getElementById('scannerWrap');
+  const video=document.getElementById('scannerVideo');
+  scannerRunning=false;
+  if(scannerFrame) cancelAnimationFrame(scannerFrame);
+  if(video) video.pause();
+  if(scannerStream){
+    scannerStream.getTracks().forEach(track=>track.stop());
+    scannerStream=null;
+  }
+  if(video) video.srcObject=null;
+  if(wrap) wrap.classList.add('hidden');
+}
+
+function scanQrFrame(){
+  if(!scannerRunning) return;
+  const video=document.getElementById('scannerVideo');
+  if(video && video.readyState===video.HAVE_ENOUGH_DATA){
+    const canvas=document.createElement('canvas');
+    canvas.width=video.videoWidth;
+    canvas.height=video.videoHeight;
+    const ctx=canvas.getContext('2d');
+    ctx.drawImage(video,0,0,canvas.width,canvas.height);
+    const imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
+    const code=jsQR(imageData.data, imageData.width, imageData.height);
+    if(code && code.data){
+      handleScannedQr(code.data);
+      return;
+    }
+  }
+  scannerFrame=requestAnimationFrame(scanQrFrame);
+}
+
+function handleScannedQr(qrText){
+  const parts=qrText.split('|').map(v=>v.trim());
+  const emailPart=parts.find(v=>v.includes('@')) || '';
+  const accounts=getAccounts();
+  if(accounts[emailPart]){
+    document.getElementById('customerSelect').value=emailPart;
+    stopQrScanner();
+    vibrate([80,40,80]);
+    alert('Kunde erkannt: '+accounts[emailPart].name);
+  }else{
+    alert('QR-Code erkannt, aber kein passender Kunde gefunden.');
   }
 }
 
@@ -616,5 +723,6 @@ renderAdmin();
 </script>
 </body>
 </html>
+
 
 
